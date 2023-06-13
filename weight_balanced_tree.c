@@ -1,5 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
+#define DATASET 10000
+#define KEYS 10000
+#define VALUES 100
 
 struct TreeNode
 {
@@ -178,4 +183,45 @@ void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *featur
     {
         detectAnomaliesOperation(tree->root, threshold, features, numOfFeatures);
     }
+}
+
+int main()
+{
+
+    srand(time(NULL));
+
+    int dataset[DATASET][2];
+    for (int i = 0; i < DATASET; i++)
+    {
+        dataset[i][0] = rand() % KEYS;
+        // dataset[i][1] = rand() % VALUES;
+    }
+
+    struct WeightBalancedTree* tree = newWeightBalancedTree();
+
+    clock_t startTime = clock();
+    for (int i = 0; i < DATASET; i++)
+    {
+        int insertKey = dataset[i][0];
+        // int insertValue = dataset[i][1];
+        int numOfAnomaly = 1;
+        insert(tree, insertKey, numOfAnomaly);
+    }
+    double insertionTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+
+    startTime = clock();
+    for (int i = 0; i < DATASET; i++)
+    {
+        int searchKey = dataset[i][0];
+        searchOperation(tree->root, searchKey);
+    }
+    double searchingTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+
+    printf("Measuring insertion time: %f seconds \n", insertionTime);
+    printf("Measuring searching time: %f seconds \n", searchingTime);
+
+    freeTree(tree->root);
+    free(tree);
+
+    return 0;
 }
