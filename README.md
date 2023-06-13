@@ -23,3 +23,20 @@ Ensures that the shared library was generated and converted successfully
 ```bash
 ls -l weight_balanced_tree.so
 ```
+
+## Benchmarking
+
+**APIs benchmarking**
+
+You can do the benchmarking using `make benchmark` command to get the comparison between Binary Tree and Weighted Binary Tree (it's worth to noting that both of the algorithm is using similar numbers of dataset). At my machine, both of them resulting with different performances with the binary tree it's slightly faster than Weighted Binary Tree
+
+| Algorithm | Method | Result Time (seconds) |
+| --------- | ------ | --------------------- |
+| Binary Tree | Searching | 0.000036 seconds |
+|  | Insertion | 0.000437 seconds |
+| Weight Binary Tree | Searching | 0.001664 seconds |
+|  | Insertion | 0.003228 seconds |
+
+**Detection Anomaly benchmarking**
+
+Work In Progress
