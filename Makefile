@@ -17,5 +17,11 @@ benchmark:
 	$(CC) -o wbt weight_balanced_tree.c
 	./wbt
 
-	$(CC) -o bt binary_tree.c
+	$(CC) -o bt binary_tree.c -lcurl
 	./bt
+
+remove:
+	rm *.so
+	rm *.o
+	rm wbt
+	rm bt
