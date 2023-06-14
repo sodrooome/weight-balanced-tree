@@ -85,6 +85,8 @@ struct TreeNode *balancedSize(struct TreeNode *root)
         return NULL;
     }
 
+    // float weightSize = root->left->weight / root->weight;
+
     if (size(root->left) < (2 * size(root->right)))
     {
         if (size(root->right->left) > size(root->right->right))
@@ -129,6 +131,47 @@ struct TreeNode *insertKey(struct TreeNode *root, int key)
         root->right = insertKey(root->right, key);
     }
 
+    return balancedSize(root);
+}
+
+struct TreeNode *delete(struct TreeNode *root, int key)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    if (key < root->key)
+    {
+        root->left = delete (root->left, key);
+    }
+    else if (key > root->key)
+    {
+        root->right = delete (root->right, key);
+    }
+    else if (root->left == NULL)
+    {
+        return root->right;
+    }
+    else if (root->right == NULL)
+    {
+        return root->left;
+    }
+    else
+    {
+        if (size(root->left) > size(root->right))
+        {
+            root = rotateRight(root);
+            root->right = delete (root->right, key);
+        }
+        else
+        {
+            root = rotateLeft(root);
+            root->left = delete (root->left, key);
+        }
+    }
+
+    updatedSize(root);
     return balancedSize(root);
 }
 
@@ -177,6 +220,24 @@ void detectAnomaliesOperation(struct TreeNode *root, int threshold, int *feature
     }
 }
 
+// instead using O(n) or linear time, how about if using constant time?
+// so we just remove the features classification and only use max threshold
+void constantDetectAnomaly(struct TreeNode *tree, int threshold)
+{
+    if (tree != NULL)
+    {
+        return;
+    }
+
+    if (tree->weight > threshold)
+    {
+        printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
+    }
+
+    constantDetectAnomaly(tree->right, threshold);
+    constantDetectAnomaly(tree->left, threshold);
+}
+
 void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures)
 {
     if (tree->root != NULL)
@@ -197,7 +258,7 @@ int main()
         // dataset[i][1] = rand() % VALUES;
     }
 
-    struct WeightBalancedTree* tree = newWeightBalancedTree();
+    struct WeightBalancedTree *tree = newWeightBalancedTree();
 
     clock_t startTime = clock();
     for (int i = 0; i < DATASET; i++)
@@ -217,8 +278,39 @@ int main()
     }
     double searchingTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
 
+    startTime = clock();
+    for (int i = 0; i < DATASET; i++)
+    {
+        int deleteKey = dataset[i][0];
+        delete (tree->root, deleteKey);
+    }
+    double deleteTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+
+    startTime = clock();
+    for (int i = 0; i < DATASET; i++)
+    {
+        int insertKey = dataset[i][0];
+        int maxTreshold = 10;
+        int *features = &dataset[i][1];
+        int numOfFeatures = 1;
+        detectAnomalies(tree, maxTreshold, features, numOfFeatures);
+    }
+    double findingAnomalies = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+
+    startTime = clock();
+    for (int i = 0; i < DATASET; i++)
+    {
+        int insertKey = dataset[i][0];
+        int maxTreshold = 10;
+        constantDetectAnomaly(tree, maxTreshold);
+    }
+    double findingAnomaly = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchingTime);
+    printf("Measuring deletion time: %f seconds \n", deleteTime);
+    printf("Measuring find anomaly time: %f seconds \n", findingAnomalies);
+    printf("Measuring find anomaly time (constant): %f seconds \n", findingAnomaly);
 
     freeTree(tree->root);
     free(tree);
