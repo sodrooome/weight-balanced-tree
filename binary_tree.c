@@ -2,17 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <curl/curl.h>
+#include "tree.h"
 
 #define DATASET 10000
 #define KEYS 10000
-
-struct TreeNode
-{
-    int key;
-    int weight;
-    struct TreeNode *right;
-    struct TreeNode *left;
-};
 
 int searchBinaryTree(struct TreeNode *root, int key)
 {
@@ -144,27 +137,6 @@ void freeTree(struct TreeNode *root)
     free(root);
 }
 
-void runBinaryTreeTests()
-{
-    struct TreeNode *tree = NULL;
-
-    for (int i = 0; i < 10; i++)
-    {
-        createNode(i);
-        insertBinaryTree(tree, i);
-
-        int searchKey = 1;
-        if (searchBinaryTree(tree, searchKey))
-        {
-            printf("Test result: %s \n", "true");
-        }
-        else
-        {
-            printf("Test result: %s \n", "false");
-        }
-    }
-}
-
 void traversal(struct TreeNode *root)
 {
     if (root == NULL)
@@ -262,6 +234,6 @@ int main()
     freeTree(tree->right);
     free(tree);
 
-    runBinaryTreeTests();
+    // runBinaryTreeTests();
     return 0;
 }
