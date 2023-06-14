@@ -222,20 +222,28 @@ void detectAnomaliesOperation(struct TreeNode *root, int threshold, int *feature
 
 // instead using O(n) or linear time, how about if using constant time?
 // so we just remove the features classification and only use max threshold
-void constantDetectAnomaly(struct TreeNode *tree, int threshold)
+void constantDetectAnomaly(struct TreeNode *root, int threshold)
 {
-    if (tree != NULL)
+    if (root != NULL)
     {
         return;
     }
 
-    if (tree->weight > threshold)
+    if (root->weight > threshold)
     {
         printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
     }
 
-    constantDetectAnomaly(tree->right, threshold);
-    constantDetectAnomaly(tree->left, threshold);
+    constantDetectAnomaly(root->right, threshold);
+    constantDetectAnomaly(root->left, threshold);
+}
+
+void constantDetection(struct WeightBalancedTree *tree, int threshold)
+{
+    if (tree->root != NULL)
+    {
+        return constantDetectAnomaly(tree->root, threshold);
+    }
 }
 
 void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures)
@@ -302,7 +310,7 @@ int main()
     {
         int insertKey = dataset[i][0];
         int maxTreshold = 10;
-        constantDetectAnomaly(tree, maxTreshold);
+        constantDetection(tree, maxTreshold);
     }
     double findingAnomaly = (double)(clock() - startTime) / CLOCKS_PER_SEC;
 
