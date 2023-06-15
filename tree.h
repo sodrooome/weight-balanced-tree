@@ -15,6 +15,8 @@ struct WeightBalancedTree
     struct TreeNode *root;
 };
 
+struct WeightBalancedTree *newWeightBalancedTree();
+
 typedef struct TreeNode TreeNode;
 
 int searchOperation(TreeNode *root, int key);
