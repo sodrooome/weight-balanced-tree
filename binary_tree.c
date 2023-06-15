@@ -148,12 +148,43 @@ void traversal(struct TreeNode *root)
     traversal(root->left);
 }
 
+void binaryTreeTests()
+{
+    struct TreeNode *root = createNode(5);
+    insertBinaryTree(root, 3);
+    insertBinaryTree(root, 5);
+    insertBinaryTree(root, 4);
+    insertBinaryTree(root, 8);
+    insertBinaryTree(root, 2);
+    insertBinaryTree(root, 6);
+
+    printf("=== Binary Tree Tests === \n");
+    int searchKey = 4;
+    int result = searchBinaryTree(root, searchKey);
+    printf("Assertion for searching %i %s \n", searchKey, result ? "Found" : "Not Found");
+
+    searchKey = 11;
+    result = searchBinaryTree(root, searchKey);
+    printf("Assertion for searching %i %s \n", searchKey, result ? "Found" : "Not Found");
+
+    int deleteKey = 4;
+    root = deleteByKey(root, deleteKey);
+    result = searchBinaryTree(root, deleteKey);
+    printf("Assertion for deletion %i %s \n", deleteKey, result ? "Found" : "Not Found");
+
+    int maxThreshold = 3;
+    detectBinaryAnomaly(root, maxThreshold);
+    printf("Assertion for detecting anomaly %i \n", maxThreshold);
+
+    freeTree(root);
+}
+
 int main()
 {
 
     srand(time(NULL));
-    CURL *request;
-    CURLcode response;
+    // CURL *request;
+    // CURLcode response;
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++)
@@ -225,15 +256,14 @@ int main()
 
     // curl_global_cleanup();
 
+    binaryTreeTests();
+
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchTime);
     printf("Measuring deletion time %f seconds \n", deleteTime);
     printf("Measuring find anomalies: %f seconds \n", findingAnomalies);
 
-    freeTree(tree->left);
-    freeTree(tree->right);
-    free(tree);
+    freeTree(tree);
 
-    // runBinaryTreeTests();
     return 0;
 }

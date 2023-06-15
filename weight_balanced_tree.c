@@ -1,30 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "tree.h"
 
 #define DATASET 10000
 #define KEYS 10000
 #define VALUES 100
 
-struct TreeNode
-{
-    int key;
-    int weight;
-    int numOfAnomaly;
-    struct TreeNode *right;
-    struct TreeNode *left;
-};
-
-struct WeightBalancedTree
-{
-    struct TreeNode *root;
-};
-
 struct WeightBalancedTree *newWeightBalancedTree()
 {
     struct WeightBalancedTree *tree = (struct WeightBalancedTree *)malloc(sizeof(struct WeightBalancedTree));
+    if (tree == NULL)
+    {
+        return NULL;
+    }
+
     tree->root = NULL;
     return tree;
+}
+
+struct TreeNode *createNode(int key)
+{
+    struct TreeNode *node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    if (node == NULL)
+    {
+        return NULL;
+    }
+
+    node->key = key;
+    node->numOfAnomaly = 1; // for now just set with 1
+    node->weight = 1;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
 }
 
 int searchOperation(struct TreeNode *root, int key)
@@ -55,26 +63,39 @@ int size(struct TreeNode *root)
 
 void updatedSize(struct TreeNode *root)
 {
+    if (root == NULL)
+    {
+        printf("Tree is not initialized yet \n");
+        return;
+    }
     root->weight = 1 + size(root->left) + size(root->right);
 }
 
 struct TreeNode *rotateRight(struct TreeNode *root)
 {
     struct TreeNode *newRoot = root->left;
+    if (newRoot == NULL)
+    {
+        return root;
+    }
     root->left = newRoot->right;
     newRoot->right = root;
     updatedSize(root);
-    updatedSize(root->right);
+    updatedSize(newRoot);
     return newRoot;
 }
 
 struct TreeNode *rotateLeft(struct TreeNode *root)
 {
     struct TreeNode *newRoot = root->right;
+    if (newRoot == NULL)
+    {
+        return root;
+    }
     root->right = newRoot->left;
     newRoot->left = root;
     updatedSize(root);
-    updatedSize(root->left);
+    updatedSize(newRoot);
     return newRoot;
 }
 
@@ -89,7 +110,7 @@ struct TreeNode *balancedSize(struct TreeNode *root)
 
     if (size(root->left) < (2 * size(root->right)))
     {
-        if (size(root->right->left) > size(root->right->right))
+        if (root->right != NULL && size(root->right->left) > size(root->right->right))
         {
             root->right = rotateRight(root->right);
         }
@@ -98,7 +119,7 @@ struct TreeNode *balancedSize(struct TreeNode *root)
 
     if (size(root->right) > (2 * size(root->left)))
     {
-        if (size(root->left->right) > size(root->left->left))
+        if (root->left != NULL && size(root->left->right) > size(root->left->left))
         {
             root->left = rotateLeft(root->left);
         }
@@ -112,10 +133,7 @@ struct TreeNode *insertKey(struct TreeNode *root, int key)
 {
     if (root == NULL)
     {
-        struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-        newNode->key = key;
-        newNode->numOfAnomaly = 1;
-        return newNode;
+        return createNode(key);
     }
 
     if (root->key == key)
@@ -126,7 +144,7 @@ struct TreeNode *insertKey(struct TreeNode *root, int key)
     {
         root->left = insertKey(root->left, key);
     }
-    else
+    else if (key < root->key)
     {
         root->right = insertKey(root->right, key);
     }
@@ -177,11 +195,15 @@ struct TreeNode *delete(struct TreeNode *root, int key)
 
 void insert(struct WeightBalancedTree *tree, int key, int anomaly)
 {
+    if (tree == NULL)
+    {
+        printf("TreeNode is not initialized yet \n");
+        return;
+    }
+
     if (tree->root == NULL)
     {
-        tree->root = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-        tree->root->key = key;
-        tree->root->numOfAnomaly = anomaly;
+        tree->root = createNode(key);
     }
     else
     {
@@ -242,7 +264,7 @@ void constantDetection(struct WeightBalancedTree *tree, int threshold)
 {
     if (tree->root != NULL)
     {
-        return constantDetectAnomaly(tree->root, threshold);
+        constantDetectAnomaly(tree->root, threshold);
     }
 }
 
@@ -252,6 +274,24 @@ void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *featur
     {
         detectAnomaliesOperation(tree->root, threshold, features, numOfFeatures);
     }
+}
+
+void weightBalancedBinaryTreeTests()
+{
+    struct WeightBalancedTree *tree = newWeightBalancedTree();
+    insert(tree, 1, 0);
+    insert(tree, 3, 0);
+    insert(tree, 4, 0);
+    insert(tree, 6, 0);
+    insert(tree, 2, 0);
+    insert(tree, 11, 1);
+
+    printf("=== Weighted Binary Tree Tests === \n");
+    int searchKey = 1;
+    int result = searchOperation(tree->root, searchKey);
+    printf("Assertion for searching key %i %s", searchKey, result ? "Found" : "Not Found");
+
+    freeTree(tree->root);
 }
 
 int main()
