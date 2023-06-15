@@ -63,10 +63,12 @@ int size(struct TreeNode *root)
 
 void updatedSize(struct TreeNode *root)
 {
-    if (root != NULL)
+    if (root == NULL)
     {
-        root->weight = 1 + size(root->left) + size(root->right);
+        printf("Tree is not initialized yet \n");
+        return;
     }
+    root->weight = 1 + size(root->left) + size(root->right);
 }
 
 struct TreeNode *rotateRight(struct TreeNode *root)
