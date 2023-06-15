@@ -39,9 +39,12 @@ You can do the benchmarking using `make benchmark` command to get the comparison
 
 **Detection Anomaly benchmarking**
 
-as you can see, for use in anomaly detection using the same dataset, the Weighted binary tree is relatively faster than the binary tree due of in the weighted binary tree there's a rebalancing tree process which tries to balance the nodes in the two objects. Thus, from here it leads to the faster performance when searching find anomaly, while the binary tree doesn't use the rebalance method, when the tree node dataset increases, the search process will gradually be slower due to an unbalanced occurrence between the two objects in the tree node
+As you can see, for use in anomaly detection using the same dataset, the Weighted binary tree is relatively faster than the binary tree due of in the weighted binary tree there's a rebalancing tree process which tries to balance the nodes in the two objects. Thus, from here it leads to the faster performance when searching find anomaly, while the binary tree doesn't use the rebalance method, when the tree node dataset increases, the search process will gradually be slower due to an unbalanced occurrence between the two objects in the tree node
 
 | Algorithm | Result Time (seconds) |
 | --------- | --------------------- |
 | Weighted Binary Tree (non-HTTP request) | 0.000083 seconds |
+| Weighted Binary Tree - Constant Time | 0.000054 seconds |
 | Binary Tree (non-HTTP request) | 0.000331 seconds |
+
+This project also represents how the process of finding anomalies uses constant time and linear time, if you look at the comparison, with constant time the search for anomalies will be faster but what needs **to be noted is**: in the `constantDetectAnomaly` method itself there are no additional parameters for the classification feature for identifying anomalies, this is what makes the search process a little faster, but there may be a bias in the results to find whether the anomaly is true or not
