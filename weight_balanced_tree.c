@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "tree.h"
+#include "utils.h"
 
 #define DATASET 10000
 #define KEYS 10000
@@ -297,7 +298,7 @@ void weightBalancedBinaryTreeTests()
 int main()
 {
 
-    srand(time(NULL));
+    struct BenchmarkResult benchmark;
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++)
@@ -308,7 +309,7 @@ int main()
 
     struct WeightBalancedTree *tree = newWeightBalancedTree();
 
-    clock_t startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int insertKey = dataset[i][0];
@@ -316,43 +317,48 @@ int main()
         int numOfAnomaly = 1;
         insert(tree, insertKey, numOfAnomaly);
     }
-    double insertionTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double insertionTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int searchKey = dataset[i][0];
         searchOperation(tree->root, searchKey);
     }
-    double searchingTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double searchingTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int deleteKey = dataset[i][0];
         delete (tree->root, deleteKey);
     }
-    double deleteTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double deleteTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int insertKey = dataset[i][0];
         int maxTreshold = 10;
         int *features = &dataset[i][1];
-        int numOfFeatures = 1;
+        int numOfFeatures = sizeof(features) / sizeof(features[0]);
         detectAnomalies(tree, maxTreshold, features, numOfFeatures);
     }
-    double findingAnomalies = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double findingAnomalies = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int insertKey = dataset[i][0];
         int maxTreshold = 10;
         constantDetection(tree, maxTreshold);
     }
-    double findingAnomaly = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double findingAnomaly = getBenchmarkResult(&benchmark);
 
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchingTime);
