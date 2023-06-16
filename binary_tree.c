@@ -3,6 +3,7 @@
 #include <time.h>
 #include <curl/curl.h>
 #include "tree.h"
+#include "utils.h"
 
 #define DATASET 10000
 #define KEYS 10000
@@ -145,6 +146,7 @@ void traversal(struct TreeNode *root)
     }
 
     traversal(root->right);
+    printf("Traversal Binary Tree: %i", root->key);
     traversal(root->left);
 }
 
@@ -182,7 +184,7 @@ void binaryTreeTests()
 int main()
 {
 
-    srand(time(NULL));
+    struct BenchmarkResult benchmark;
     // CURL *request;
     // CURLcode response;
 
@@ -194,31 +196,34 @@ int main()
 
     struct TreeNode *tree;
 
-    clock_t startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int insertKey = dataset[i][0];
         createNode(insertKey);
     }
-    double insertionTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double insertionTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int searchKey = dataset[i][0];
         searchBinaryTree(tree, searchKey);
     }
-    double searchTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double searchTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int deleteKey = dataset[i][0];
         deleteByKey(tree, deleteKey);
     }
-    double deleteTime = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double deleteTime = getBenchmarkResult(&benchmark);
 
-    startTime = clock();
+    startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
         int insertKey = dataset[i][0];
@@ -226,7 +231,8 @@ int main()
         int maxTreshold = 10;
         detectBinaryAnomaly(tree, maxTreshold);
     }
-    double findingAnomalies = (double)(clock() - startTime) / CLOCKS_PER_SEC;
+    endBenchmark(&benchmark);
+    double findingAnomalies = getBenchmarkResult(&benchmark);
 
     // Implementation of Anomaly detection using HTTP request
     // TODO: fix this request, since it will got an error from response
