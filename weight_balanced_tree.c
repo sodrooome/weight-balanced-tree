@@ -315,7 +315,7 @@ void weightBalancedBinaryTreeTests()
 int main()
 {
 
-    struct BenchmarkResult benchmark;
+    BenchmarkResult benchmark;
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++)
@@ -384,7 +384,6 @@ int main()
     printf("Measuring find anomaly time (constant): %f seconds \n", findingAnomaly);
 
     freeWeightBalancedTree(tree);
-    free(tree);
 
     return 0;
 }
