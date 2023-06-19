@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <errno.h>
+#include <string.h>
 #include "tree.h"
 #include "utils.h"
 
@@ -13,6 +15,7 @@ struct WeightBalancedTree *newWeightBalancedTree()
     struct WeightBalancedTree *tree = (struct WeightBalancedTree *)malloc(sizeof(struct WeightBalancedTree));
     if (tree == NULL)
     {
+        fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
         return NULL;
     }
 
@@ -25,6 +28,7 @@ struct TreeNode *createNode(int key)
     struct TreeNode *node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
     if (node == NULL)
     {
+        fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
         return NULL;
     }
 
@@ -224,6 +228,19 @@ void freeTree(struct TreeNode *root)
     free(root);
 }
 
+void freeWeightBalancedTree(struct WeightBalancedTree *tree)
+{
+    // remove the memory allocation for weight balanced tree nodes
+    // it's different with the remove the tree node
+    if (tree == NULL)
+    {
+        return;
+    }
+
+    freeTree(tree->root);
+    free(tree);
+}
+
 void detectAnomaliesOperation(struct TreeNode *root, int threshold, int *features, int numOfFeatures)
 {
     if (root == NULL)
@@ -366,7 +383,7 @@ int main()
     printf("Measuring find anomaly time: %f seconds \n", findingAnomalies);
     printf("Measuring find anomaly time (constant): %f seconds \n", findingAnomaly);
 
-    freeTree(tree->root);
+    freeWeightBalancedTree(tree);
     free(tree);
 
     return 0;

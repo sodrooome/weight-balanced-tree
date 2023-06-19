@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <curl/curl.h>
+#include <string.h>
+#include <errno.h>
 #include "tree.h"
 #include "utils.h"
 
@@ -28,6 +30,10 @@ int searchBinaryTree(struct TreeNode *root, int key)
 struct TreeNode *createNode(int key)
 {
     struct TreeNode *node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    if (node == NULL)
+    {
+        fprintf(stderr, "Failed to allocate the memory into tree node %s \n", strerror(errno));
+    }
     node->key = key;
     node->left = NULL;
     node->right = NULL;
