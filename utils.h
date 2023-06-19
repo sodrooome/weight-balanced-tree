@@ -1,22 +1,22 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-struct DataPoint
+typedef struct
 {
     int minValue;
     int maxValue;
-};
+} DataPoint;
 
-struct BenchmarkResult
+typedef struct
 {
     clock_t start;
     clock_t end;
     double duration;
-};
+} BenchmarkResult;
 
 double getRandomNumber(int minValue, int maxValue);
-double getBenchmarkResult(struct BenchmarkResult *result);
-void startBenchmark(struct BenchmarkResult *result);
-void endBenchmark(struct BenchmarkResult *result);
+double getBenchmarkResult(BenchmarkResult *result);
+void startBenchmark(BenchmarkResult *result);
+void endBenchmark(BenchmarkResult *result);
 
 #endif
