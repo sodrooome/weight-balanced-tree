@@ -1,5 +1,6 @@
 CC ?= gcc
 LS ?= ls
+CFLAGS ?= -Wall -Wextra -g
 
 generate: 
 	$(CC) -c -fPIC weight_balanced_tree.c
@@ -19,6 +20,20 @@ benchmark:
 
 	$(CC) -o bt binary_tree.c -lcurl
 	./bt
+
+debugbt:
+	$(CC) -c utils.c
+	$(CC) $(CFLAGS) binary_tree.c -o bt
+	gdb ./bt
+
+debugwbt:
+	$(CC) -c utils.c
+	$(CC) $(CFLAGS) weight_balanced_tree.c utils.o -o wbt
+	gdb ./wbt
+
+.PHONY: clean
+clean:
+	rm -rf bt wbt
 
 remove:
 	rm *.so
