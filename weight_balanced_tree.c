@@ -9,10 +9,11 @@
 #define DATASET 10000
 #define KEYS 10000
 #define VALUES 100
+#define SIZEOF(arr) sizeof(arr) / sizeof(*arr)
 
-struct WeightBalancedTree *newWeightBalancedTree()
+WeightBalancedTree *newWeightBalancedTree()
 {
-    struct WeightBalancedTree *tree = (struct WeightBalancedTree *)malloc(sizeof(struct WeightBalancedTree));
+    WeightBalancedTree *tree = (WeightBalancedTree *)malloc(sizeof(WeightBalancedTree));
     if (tree == NULL)
     {
         fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
@@ -23,9 +24,9 @@ struct WeightBalancedTree *newWeightBalancedTree()
     return tree;
 }
 
-struct TreeNode *createNode(int key)
+TreeNode *createNode(int key)
 {
-    struct TreeNode *node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
     if (node == NULL)
     {
         fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
@@ -40,7 +41,7 @@ struct TreeNode *createNode(int key)
     return node;
 }
 
-int searchOperation(struct TreeNode *root, int key)
+int searchOperation(TreeNode *root, int key)
 {
     if (root == NULL || root->key == key)
     {
@@ -57,7 +58,7 @@ int searchOperation(struct TreeNode *root, int key)
     }
 }
 
-int size(struct TreeNode *root)
+int size(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -66,7 +67,7 @@ int size(struct TreeNode *root)
     return root->weight;
 }
 
-void updatedSize(struct TreeNode *root)
+void updatedSize(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -76,9 +77,9 @@ void updatedSize(struct TreeNode *root)
     root->weight = 1 + size(root->left) + size(root->right);
 }
 
-struct TreeNode *rotateRight(struct TreeNode *root)
+TreeNode *rotateRight(TreeNode *root)
 {
-    struct TreeNode *newRoot = root->left;
+    TreeNode *newRoot = root->left;
     if (newRoot == NULL)
     {
         return root;
@@ -90,9 +91,9 @@ struct TreeNode *rotateRight(struct TreeNode *root)
     return newRoot;
 }
 
-struct TreeNode *rotateLeft(struct TreeNode *root)
+TreeNode *rotateLeft(TreeNode *root)
 {
-    struct TreeNode *newRoot = root->right;
+    TreeNode *newRoot = root->right;
     if (newRoot == NULL)
     {
         return root;
@@ -104,7 +105,7 @@ struct TreeNode *rotateLeft(struct TreeNode *root)
     return newRoot;
 }
 
-struct TreeNode *balancedSize(struct TreeNode *root)
+TreeNode *balancedSize(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -134,7 +135,7 @@ struct TreeNode *balancedSize(struct TreeNode *root)
     return root;
 }
 
-struct TreeNode *insertKey(struct TreeNode *root, int key)
+TreeNode *insertKey(TreeNode *root, int key)
 {
     if (root == NULL)
     {
@@ -157,7 +158,7 @@ struct TreeNode *insertKey(struct TreeNode *root, int key)
     return balancedSize(root);
 }
 
-struct TreeNode *delete(struct TreeNode *root, int key)
+TreeNode *delete(TreeNode *root, int key)
 {
     if (root == NULL)
     {
@@ -198,7 +199,7 @@ struct TreeNode *delete(struct TreeNode *root, int key)
     return balancedSize(root);
 }
 
-void insert(struct WeightBalancedTree *tree, int key, int anomaly)
+void insert(WeightBalancedTree *tree, int key, __attribute__((unused)) int anomaly)
 {
     if (tree == NULL)
     {
@@ -216,7 +217,7 @@ void insert(struct WeightBalancedTree *tree, int key, int anomaly)
     }
 }
 
-void freeTree(struct TreeNode *root)
+void freeTree(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -228,7 +229,7 @@ void freeTree(struct TreeNode *root)
     free(root);
 }
 
-void freeWeightBalancedTree(struct WeightBalancedTree *tree)
+void freeWeightBalancedTree(WeightBalancedTree *tree)
 {
     // remove the memory allocation for weight balanced tree nodes
     // it's different with the remove the tree node
@@ -241,7 +242,7 @@ void freeWeightBalancedTree(struct WeightBalancedTree *tree)
     free(tree);
 }
 
-void detectAnomaliesOperation(struct TreeNode *root, int threshold, int *features, int numOfFeatures)
+void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures)
 {
     if (root == NULL)
     {
@@ -262,7 +263,7 @@ void detectAnomaliesOperation(struct TreeNode *root, int threshold, int *feature
 
 // instead using O(n) or linear time, how about if using constant time?
 // so we just remove the features classification and only use max threshold
-void constantDetectAnomaly(struct TreeNode *root, int threshold)
+void constantDetectAnomaly(TreeNode *root, int threshold)
 {
     if (root != NULL)
     {
@@ -278,7 +279,7 @@ void constantDetectAnomaly(struct TreeNode *root, int threshold)
     constantDetectAnomaly(root->left, threshold);
 }
 
-void constantDetection(struct WeightBalancedTree *tree, int threshold)
+void constantDetection(WeightBalancedTree *tree, int threshold)
 {
     if (tree->root != NULL)
     {
@@ -286,7 +287,7 @@ void constantDetection(struct WeightBalancedTree *tree, int threshold)
     }
 }
 
-void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures)
+void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures)
 {
     if (tree->root != NULL)
     {
@@ -296,7 +297,7 @@ void detectAnomalies(struct WeightBalancedTree *tree, int threshold, int *featur
 
 void weightBalancedBinaryTreeTests()
 {
-    struct WeightBalancedTree *tree = newWeightBalancedTree();
+    WeightBalancedTree *tree = newWeightBalancedTree();
     insert(tree, 1, 0);
     insert(tree, 3, 0);
     insert(tree, 4, 0);
@@ -324,7 +325,7 @@ int main()
         // dataset[i][1] = rand() % VALUES;
     }
 
-    struct WeightBalancedTree *tree = newWeightBalancedTree();
+    WeightBalancedTree *tree = newWeightBalancedTree();
 
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
@@ -358,10 +359,9 @@ int main()
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
-        int insertKey = dataset[i][0];
         int maxTreshold = 10;
-        int *features = &dataset[i][1];
-        int numOfFeatures = sizeof(features) / sizeof(features[0]);
+        int *features = dataset[i];
+        size_t numOfFeatures = SIZEOF(dataset[i]);
         detectAnomalies(tree, maxTreshold, features, numOfFeatures);
     }
     endBenchmark(&benchmark);
@@ -370,7 +370,6 @@ int main()
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
     {
-        int insertKey = dataset[i][0];
         int maxTreshold = 10;
         constantDetection(tree, maxTreshold);
     }
