@@ -10,7 +10,7 @@
 #define DATASET 10000
 #define KEYS 10000
 
-int searchBinaryTree(struct TreeNode *root, int key)
+int searchBinaryTree(TreeNode *root, int key)
 {
     if (root == NULL || root->key == key)
     {
@@ -27,9 +27,9 @@ int searchBinaryTree(struct TreeNode *root, int key)
     }
 }
 
-struct TreeNode *createNode(int key)
+TreeNode *createNode(int key)
 {
-    struct TreeNode *node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
     if (node == NULL)
     {
         fprintf(stderr, "Failed to allocate the memory into tree node %s \n", strerror(errno));
@@ -41,9 +41,9 @@ struct TreeNode *createNode(int key)
     return node;
 }
 
-struct TreeNode *minValueNode(struct TreeNode *root)
+TreeNode *minValueNode(TreeNode *root)
 {
-    struct TreeNode *current = root;
+    TreeNode *current = root;
 
     while (current && current->left != NULL)
     {
@@ -53,8 +53,20 @@ struct TreeNode *minValueNode(struct TreeNode *root)
     return current;
 }
 
+TreeNode *maxValueNode(TreeNode *root)
+{
+    TreeNode *current = root;
+
+    while (current && current->right != NULL)
+    {
+        current = current->right;
+    }
+
+    return current;
+}
+
 // main source: https://www.techiedelight.com/deletion-from-bst/
-struct TreeNode *deleteByKey(struct TreeNode *root, int key)
+TreeNode *deleteByKey(TreeNode *root, int key)
 {
     if (root == NULL)
     {
@@ -73,18 +85,18 @@ struct TreeNode *deleteByKey(struct TreeNode *root, int key)
     {
         if (root->left == NULL)
         {
-            struct TreeNode *tempRoot = root->right;
+            TreeNode *tempRoot = root->right;
             free(root);
             return tempRoot;
         }
         else
         {
-            struct TreeNode *tempRoot = root->left;
+            TreeNode *tempRoot = root->left;
             free(root);
             return tempRoot;
         }
 
-        struct TreeNode *tempRoot = minValueNode(root->right);
+        TreeNode *tempRoot = minValueNode(root->right);
         root->key = tempRoot->key;
         root->right = deleteByKey(root->right, tempRoot->key);
     }
@@ -92,31 +104,30 @@ struct TreeNode *deleteByKey(struct TreeNode *root, int key)
     return root;
 }
 
-struct TreeNode *insertBinaryTree(struct TreeNode *root, int key)
+TreeNode *insertBinaryTree(TreeNode *root, int key)
 {
     if (root == NULL)
     {
-        return NULL;
+        return createNode(key);
     }
 
     if (key < root->key)
     {
-        return insertBinaryTree(root->left, key);
+        root->left = insertBinaryTree(root->left, key);
     }
     else if (key > root->key)
     {
-        return insertBinaryTree(root->right, key);
+        root->right = insertBinaryTree(root->right, key);
     }
     else
     {
         root->weight += 1;
     }
 
-    root->weight += 1;
     return root;
 }
 
-void detectBinaryAnomaly(struct TreeNode *root, int threshold)
+void detectBinaryAnomaly(TreeNode *root, int threshold)
 {
     if (root == NULL)
     {
@@ -132,7 +143,7 @@ void detectBinaryAnomaly(struct TreeNode *root, int threshold)
     detectBinaryAnomaly(root->right, threshold);
 }
 
-void freeTree(struct TreeNode *root)
+void freeTree(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -144,7 +155,7 @@ void freeTree(struct TreeNode *root)
     free(root);
 }
 
-void traversal(struct TreeNode *root)
+void traversal(TreeNode *root)
 {
     if (root == NULL)
     {
@@ -158,7 +169,7 @@ void traversal(struct TreeNode *root)
 
 void binaryTreeTests()
 {
-    struct TreeNode *root = createNode(5);
+    TreeNode *root = createNode(5);
     insertBinaryTree(root, 3);
     insertBinaryTree(root, 5);
     insertBinaryTree(root, 4);
@@ -190,17 +201,14 @@ void binaryTreeTests()
 int main()
 {
 
-    struct BenchmarkResult benchmark;
-    // CURL *request;
-    // CURLcode response;
+    BenchmarkResult benchmark;
+    TreeNode *tree = NULL;
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++)
     {
         dataset[i][0] = rand() % KEYS;
     }
-
-    struct TreeNode *tree;
 
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++)
@@ -269,6 +277,29 @@ int main()
     // curl_global_cleanup();
 
     binaryTreeTests();
+
+    TreeNode *minValue = minValueNode(tree);
+    TreeNode *maxValue = maxValueNode(tree);
+
+    // Tree node is empty since i dont create the tree
+    // and inserting all values into each node of tree
+    if (maxValue == NULL)
+    {
+        printf("Tree Node is empty \n");
+    }
+    else
+    {
+        printf("Max value is: %d \n", maxValue->key);
+    }
+
+    if (minValue == NULL)
+    {
+        printf("Tree Node is empty \n");
+    }
+    else
+    {
+        printf("Min value is: %d \n", minValue->key);
+    }
 
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchTime);
