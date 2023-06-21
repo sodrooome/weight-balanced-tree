@@ -114,7 +114,7 @@ TreeNode *balancedSize(TreeNode *root)
 
     // float weightSize = root->left->weight / root->weight;
 
-    if (size(root->left) < (2 * size(root->right)))
+    if (root->left != NULL && size(root->left) < (2 * size(root->right)))
     {
         if (root->right != NULL && size(root->right->left) > size(root->right->right))
         {
@@ -123,7 +123,7 @@ TreeNode *balancedSize(TreeNode *root)
         root = rotateRight(root);
     }
 
-    if (size(root->right) > (2 * size(root->left)))
+    if (root->right != NULL && size(root->right) > (2 * size(root->left)))
     {
         if (root->left != NULL && size(root->left->right) > size(root->left->left))
         {
@@ -158,7 +158,7 @@ TreeNode *insertKey(TreeNode *root, int key)
     return balancedSize(root);
 }
 
-TreeNode *delete(TreeNode *root, int key)
+TreeNode *deleteByKey(TreeNode *root, int key)
 {
     if (root == NULL)
     {
@@ -167,11 +167,11 @@ TreeNode *delete(TreeNode *root, int key)
 
     if (key < root->key)
     {
-        root->left = delete (root->left, key);
+        root->left = deleteByKey(root->left, key);
     }
     else if (key > root->key)
     {
-        root->right = delete (root->right, key);
+        root->right = deleteByKey(root->right, key);
     }
     else if (root->left == NULL)
     {
@@ -186,12 +186,12 @@ TreeNode *delete(TreeNode *root, int key)
         if (size(root->left) > size(root->right))
         {
             root = rotateRight(root);
-            root->right = delete (root->right, key);
+            root->right = deleteByKey(root->right, key);
         }
         else
         {
             root = rotateLeft(root);
-            root->left = delete (root->left, key);
+            root->left = deleteByKey(root->left, key);
         }
     }
 
@@ -298,6 +298,7 @@ void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int
 void weightBalancedBinaryTreeTests()
 {
     WeightBalancedTree *tree = newWeightBalancedTree();
+    TreeNode *root = NULL;
     insert(tree, 1, 0);
     insert(tree, 3, 0);
     insert(tree, 4, 0);
@@ -308,7 +309,22 @@ void weightBalancedBinaryTreeTests()
     printf("=== Weighted Binary Tree Tests === \n");
     int searchKey = 1;
     int result = searchOperation(tree->root, searchKey);
-    printf("Assertion for searching key %i %s", searchKey, result ? "Found" : "Not Found");
+    printf("Assertion for searching key %i %s \n", searchKey, result ? "Is Found" : "Not Found");
+
+    searchKey = 19;
+    result = searchOperation(tree->root, searchKey);
+    printf("Assertion for searching key (invalid key) %i %s \n", searchKey, result ? "Is Found" : "Not Found");
+
+    int delKey = 11;
+    WeightBalancedTree *deletion = (WeightBalancedTree *)deleteByKey(root, delKey);
+
+    // this will lead into another segmentation fault errors
+    // TODO: fix what causing this error before the deletion process (balancing function)
+    printf("Assertion for deleting key %d \n", deletion->root->key);
+
+    int maxThreshold = 7;
+    constantDetectAnomaly(root, maxThreshold);
+    printf("Detection anomaly with constant time \n");
 
     freeTree(tree->root);
 }
@@ -351,7 +367,7 @@ int main()
     for (int i = 0; i < DATASET; i++)
     {
         int deleteKey = dataset[i][0];
-        delete (tree->root, deleteKey);
+        deleteByKey(tree->root, deleteKey);
     }
     endBenchmark(&benchmark);
     double deleteTime = getBenchmarkResult(&benchmark);
@@ -375,6 +391,8 @@ int main()
     }
     endBenchmark(&benchmark);
     double findingAnomaly = getBenchmarkResult(&benchmark);
+
+    weightBalancedBinaryTreeTests();
 
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchingTime);
