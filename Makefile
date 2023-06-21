@@ -23,7 +23,7 @@ benchmark:
 
 debugbt:
 	$(CC) -c utils.c
-	$(CC) $(CFLAGS) binary_tree.c -o bt
+	$(CC) $(CFLAGS) binary_tree.c utils.o -o bt
 	gdb ./bt
 
 debugwbt:
