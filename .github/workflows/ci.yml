@@ -13,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up C environment
-        uses: actions/setup-csharp@v1
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1
+        with:
+          version: latest
+          platform: x64
 
       - name: Checkout code
         uses: actions/checkout@v2
