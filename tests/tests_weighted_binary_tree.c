@@ -27,7 +27,7 @@ void weightBalancedBinaryTreeTests() {
 
     // this will lead to other segmentation fault errors
     // TODO: fix what causing this error before the deletion process (rebalance process)
-    printf("Assertion for deleting key %i \n", tree->root->key);
+    // printf("Assertion for deleting key %d \n", tree->root->key);
     searchKey = 11;
     result = searchOperation(tree->root, searchKey);
     printf("Assertion after deletion the key: %i should be removed, status: %s \n", searchKey,
