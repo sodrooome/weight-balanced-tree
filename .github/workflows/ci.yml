@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up C environment
+        uses: actions/setup-csharp@v1
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate
+        run: make generate
+
+      - name: Created Shared files
+        run: make created
+
+      - name: Verify build
+        run: make verify
+
+      - name: Benchmark
+        run: make benchmark

@@ -3,3 +3,8 @@ __pycache__/
 .vscode/
 *.o
 *.so
+
+# ignore the executable build for binary tree and weighted binary tree
+# by default it will ignore the files if the filename were "bst" or "bt"
+wbt
+bt
