@@ -1,5 +1,7 @@
 ## Weighted Balanced Tree for Anomaly Detection
 
+[![Tests](https://github.com/sodrooome/weight-balanced-tree/actions/workflows/ci.yml/badge.svg)](https://github.com/sodrooome/weight-balanced-tree/actions/workflows/ci.yml)
+
 Exploring weighted-balanced tree as the alternative solution for detecting anomaly. It's worth to notice, the anomaly detection will employ the isolation forest algorithm as its core, with a binary search tree utilized for the anomaly classification process. Currently, im suspecting and have an assumption that the binary search tree may encounter unsuccessful operations when the tree nodes become unbalanced / skeewed tree operation (let's say we assume there are 5 tree nodes which of them weren't sorted by default), making it challenging to maintain balance between the two nodes.
 
 This is just proof-of-concept for my research for a master's degree, it may have biased and unxepected results since it wasn't properly tested and evaluated
