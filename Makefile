@@ -4,7 +4,7 @@ CFLAGS ?= -Wall -Wextra -g
 
 generate: 
 	$(CC) -c -fPIC src/weight_balanced_tree.c
-	$(CC) -c -fPIC src/binary_tree.c -lcurl
+	$(CC) -c -fPIC src/binary_tree.c
 
 created:
 	$(CC) -shared -o weight_balanced_tree.so weight_balanced_tree.o
@@ -20,7 +20,7 @@ benchmark:
 	./wbt
 
 	$(CC) -c src/utils.c
-	$(CC) -o bt src/binary_tree.c -lcurl utils.o
+	$(CC) -o bt src/binary_tree.c utils.o
 	./bt
 
 debugbt:
