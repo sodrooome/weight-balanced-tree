@@ -123,12 +123,9 @@ int detectBinaryAnomaly(TreeNode *root, int threshold) {
     }
 
     int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold);
-    if (findLeftAnomaly == -1) {
-        return -1;
-    }
-
     int findRightAnomaly = detectBinaryAnomaly(root->right, threshold);
-    if (findRightAnomaly == -1) {
+
+    if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
         return -1;
     }
 
