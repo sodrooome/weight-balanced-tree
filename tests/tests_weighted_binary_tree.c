@@ -34,8 +34,12 @@ void weightBalancedBinaryTreeTests() {
            result ? "Removed" : "Not Removed");
 
     int maxThreshold = 7;
-    constantDetectAnomaly(root, maxThreshold);
-    printf("Detection anomaly with constant time \n");
+    int findAnomaly = constantDetectAnomaly(root, maxThreshold);
+    if (findAnomaly < 0) {
+        handleErrors(findAnomaly);
+    } else {
+        printf("No anomalies that being found, result of finding anomalies is: %i \n", findAnomaly);
+    }
 
     freeTree(tree->root);
 }

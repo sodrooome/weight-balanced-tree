@@ -41,6 +41,10 @@ TreeNode *createNode(int key) {
 }
 
 TreeNode *minValueNode(TreeNode *root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
     TreeNode *current = root;
 
     while (current && current->left != NULL) {
@@ -51,6 +55,10 @@ TreeNode *minValueNode(TreeNode *root) {
 }
 
 TreeNode *maxValueNode(TreeNode *root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
     TreeNode *current = root;
 
     while (current && current->right != NULL) {
@@ -105,17 +113,26 @@ TreeNode *insertBinaryTree(TreeNode *root, int key) {
     return root;
 }
 
-void detectBinaryAnomaly(TreeNode *root, int threshold) {
+int detectBinaryAnomaly(TreeNode *root, int threshold) {
     if (root == NULL) {
-        return;
+        return 0;
     }
 
     if (root->weight > threshold) {
-        printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
+        return -1;
     }
 
-    detectBinaryAnomaly(root->left, threshold);
-    detectBinaryAnomaly(root->right, threshold);
+    int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold);
+    if (findLeftAnomaly == -1) {
+        return -1;
+    }
+
+    int findRightAnomaly = detectBinaryAnomaly(root->right, threshold);
+    if (findRightAnomaly == -1) {
+        return -1;
+    }
+
+    return 0;
 }
 
 void freeTree(TreeNode *root) {
@@ -141,7 +158,24 @@ void traversal(TreeNode *root) {
 int main() {
 
     BenchmarkResult benchmark;
-    TreeNode *tree = NULL;
+    TreeNode *tree = createNode(5);
+
+    insertBinaryTree(tree, 3);
+    insertBinaryTree(tree, 5);
+    insertBinaryTree(tree, 4);
+    insertBinaryTree(tree, 8);
+    insertBinaryTree(tree, 2);
+    insertBinaryTree(tree, 6);
+
+    startBenchmark(&benchmark);
+    TreeNode *minValue = minValueNode(tree);
+    endBenchmark(&benchmark);
+    double findingMinValue = getBenchmarkResult(&benchmark);
+
+    startBenchmark(&benchmark);
+    TreeNode *maxValue = maxValueNode(tree);
+    endBenchmark(&benchmark);
+    double findingMaxValue = getBenchmarkResult(&benchmark);
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++) {
@@ -212,23 +246,8 @@ int main() {
 
     binaryTreeTests();
 
-    TreeNode *minValue = minValueNode(tree);
-    TreeNode *maxValue = maxValueNode(tree);
-
-    // Tree node is empty since i dont create the tree
-    // and inserting all values into each node of tree
-    if (maxValue == NULL) {
-        printf("Tree Node is empty \n");
-    } else {
-        printf("Max value is: %d \n", maxValue->key);
-    }
-
-    if (minValue == NULL) {
-        printf("Tree Node is empty \n");
-    } else {
-        printf("Min value is: %d \n", minValue->key);
-    }
-
+    printf("Measuring finding minimum key: %f seconds \n", findingMinValue);
+    printf("Measuring finding maximum key: %f seconds \n", findingMaxValue);
     printf("Measuring insertion time: %f seconds \n", insertionTime);
     printf("Measuring searching time: %f seconds \n", searchTime);
     printf("Measuring deletion time %f seconds \n", deleteTime);
