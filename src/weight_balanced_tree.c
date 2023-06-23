@@ -206,22 +206,28 @@ void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int 
 
 // instead using O(n) or linear time, how about if using constant time?
 // so we just remove the features classification and only use max threshold
-void constantDetectAnomaly(TreeNode *root, int threshold) {
+int constantDetectAnomaly(TreeNode *root, int threshold) {
     if (root == NULL) {
-        return;
+        return 0;
     }
 
     if (root->weight > threshold) {
-        printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
+        return -1;
     }
 
-    constantDetectAnomaly(root->right, threshold);
-    constantDetectAnomaly(root->left, threshold);
+    int findRightAnomaly = constantDetectAnomaly(root->right, threshold);
+    int findLeftAnomaly = constantDetectAnomaly(root->left, threshold);
+
+    if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
+        return -1;
+    }
+
+    return 0;
 }
 
-void constantDetection(WeightBalancedTree *tree, int threshold) {
+int constantDetection(WeightBalancedTree *tree, int threshold) {
     if (tree->root != NULL) {
-        constantDetectAnomaly(tree->root, threshold);
+        return constantDetectAnomaly(tree->root, threshold);
     }
 }
 
