@@ -18,5 +18,6 @@ double getRandomNumber(int minValue, int maxValue);
 double getBenchmarkResult(BenchmarkResult *result);
 void startBenchmark(BenchmarkResult *result);
 void endBenchmark(BenchmarkResult *result);
+void handleErrors(int returnedCode);
 
 #endif
