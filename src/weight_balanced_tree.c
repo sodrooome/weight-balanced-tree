@@ -129,6 +129,20 @@ TreeNode *insertKey(TreeNode *root, int key) {
     return balancedSize(root);
 }
 
+TreeNode *minValueNode(TreeNode *root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    TreeNode *current = root;
+
+    while (current && current->left != NULL) {
+        current = current->left;
+    }
+
+    return current;
+}
+
 TreeNode *deleteByKey(TreeNode *root, int key) {
     if (root == NULL) {
         return NULL;
@@ -138,22 +152,30 @@ TreeNode *deleteByKey(TreeNode *root, int key) {
         root->left = deleteByKey(root->left, key);
     } else if (key > root->key) {
         root->right = deleteByKey(root->right, key);
-    } else if (root->left == NULL) {
-        return root->right;
-    } else if (root->right == NULL) {
-        return root->left;
     } else {
-        if (size(root->left) > size(root->right)) {
-            root = rotateRight(root);
-            root->right = deleteByKey(root->right, key);
+        if (root->left == NULL && root->right == NULL) {
+            // handling when the root left and right if its null and just clean it up
+            free(root);
+            return NULL;
+        } else if (root->left == NULL) {
+            TreeNode *tempTree = root->right;
+            free(root);
+            return tempTree;
+        } else if (root->right == NULL) {
+            TreeNode *tempTree = root->left;
+            free(root);
+            return tempTree;
         } else {
-            root = rotateLeft(root);
-            root->left = deleteByKey(root->left, key);
+            // this should be fixed the key isn't deleted, the operation of deletion
+            // should be deleted based on the minimum value and usually if we talked
+            // about binary tree, the lowest value in tree it's come from right tree
+            TreeNode *minRightSubtree = minValueNode(root->right);
+            root->key = minRightSubtree->key;
+            root->right = deleteByKey(root->right, minRightSubtree->key);
         }
     }
 
-    updatedSize(root);
-    return balancedSize(root);
+    return root;
 }
 
 void insert(WeightBalancedTree *tree, int key, __attribute__((unused)) int anomaly) {
