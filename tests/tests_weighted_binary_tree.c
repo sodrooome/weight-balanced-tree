@@ -41,5 +41,13 @@ void weightBalancedBinaryTreeTests() {
         printf("No anomalies that being found, result of finding anomalies is: %i \n", findAnomaly);
     }
 
+    int setOfFeatures[3] = {11, 12, 18};
+    maxThreshold = 0;
+    int *features = setOfFeatures;
+    int numOfFeatures = 3;
+    // debug purposes, might've removed later on
+    // printf("Weight of root: %i \n", tree->root->weight);
+    detectAnomalies(tree, maxThreshold, features, numOfFeatures);
+
     freeTree(tree->root);
 }
