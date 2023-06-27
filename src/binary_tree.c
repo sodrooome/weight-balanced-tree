@@ -165,12 +165,12 @@ int main() {
     insertBinaryTree(tree, 6);
 
     startBenchmark(&benchmark);
-    TreeNode *minValue = minValueNode(tree);
+    minValueNode(tree);
     endBenchmark(&benchmark);
     double findingMinValue = getBenchmarkResult(&benchmark);
 
     startBenchmark(&benchmark);
-    TreeNode *maxValue = maxValueNode(tree);
+    maxValueNode(tree);
     endBenchmark(&benchmark);
     double findingMaxValue = getBenchmarkResult(&benchmark);
 
@@ -207,7 +207,7 @@ int main() {
     for (int i = 0; i < DATASET; i++) {
         int insertKey = dataset[i][0];
         createNode(insertKey);
-        int maxTreshold = 10;
+        int maxTreshold = 0;
         detectBinaryAnomaly(tree, maxTreshold);
     }
     endBenchmark(&benchmark);
@@ -243,6 +243,7 @@ int main() {
 
     binaryTreeTests();
 
+    printf("Weight: %i \n", tree->weight);
     printf("Measuring finding minimum key: %f seconds \n", findingMinValue);
     printf("Measuring finding maximum key: %f seconds \n", findingMaxValue);
     printf("Measuring insertion time: %f seconds \n", insertionTime);

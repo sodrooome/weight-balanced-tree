@@ -40,9 +40,9 @@ void binaryTreeTests() {
     int deleteKey = 4;
     root = deleteByKey(root, deleteKey);
     result = searchBinaryTree(root, deleteKey);
-    printf("Assertion for deletion %i %s \n", deleteKey, result ? "Is Found" : "Not Found");
+    printf("Assertion for deletion %i, status is: %s \n", deleteKey, result ? "Removed" : "Not Removed");
 
-    int maxThreshold = 4;
+    int maxThreshold = 0;
     int findAnomaly = detectBinaryAnomaly(root, maxThreshold);
     if (findAnomaly < 0) {
         handleErrors(findAnomaly);
