@@ -79,19 +79,22 @@ TreeNode *deleteByKey(TreeNode *root, int key) {
     } else if (key > root->key) {
         root->right = deleteByKey(root->right, key);
     } else {
-        if (root->left == NULL) {
+        if (root->left == NULL && root->right == NULL) {
+            free(root);
+            return NULL;
+        } else if (root->left == NULL) {
             TreeNode *tempRoot = root->right;
             free(root);
             return tempRoot;
-        } else {
+        } else if (root->right == NULL) {
             TreeNode *tempRoot = root->left;
             free(root);
             return tempRoot;
+        } else {
+            TreeNode *minRightSubtree = minValueNode(root->right);
+            root->key = minRightSubtree->key;
+            root->right = deleteByKey(root->right, minRightSubtree->key);
         }
-
-        TreeNode *tempRoot = minValueNode(root->right);
-        root->key = tempRoot->key;
-        root->right = deleteByKey(root->right, tempRoot->key);
     }
 
     return root;
