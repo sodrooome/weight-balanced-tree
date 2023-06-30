@@ -19,14 +19,17 @@ WeightBalancedTree *newWeightBalancedTree();
 int searchOperation(TreeNode *root, int key);
 int size(TreeNode *root);
 int searchBinaryTree(TreeNode *root, int key);
-int constantDetectAnomaly(TreeNode *root, int threshold);
-int constantDetection(WeightBalancedTree *tree, int threshold);
+int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative);
+int constantDetection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
+                      int *falseNegative);
 int detectBinaryAnomaly(TreeNode *root, int threshold);
 void updatedSize(TreeNode *root);
-void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures);
+void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
+                              int *falsePositive, int *falseNegative);
 void insert(WeightBalancedTree *tree, int key, int anomaly);
 void freeTree(TreeNode *root);
-void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures);
+void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
+                     int *falsePositive, int *falseNegative);
 void traversal(TreeNode *root);
 TreeNode *insertBinaryTree(TreeNode *root, int key);
 TreeNode *deleteByKey(TreeNode *root, int key);
