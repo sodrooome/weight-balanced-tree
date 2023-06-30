@@ -33,6 +33,10 @@ debugwbt:
 	$(CC) $(CFLAGS) src/weight_balanced_tree.c utils.o -o wbt
 	gdb ./wbt
 
+visualize:
+	pip3 install -r requirements.txt
+	python visualize.py
+
 .PHONY: clean
 clean:
 	rm -rf bt wbt
