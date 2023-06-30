@@ -143,6 +143,20 @@ TreeNode *minValueNode(TreeNode *root) {
     return current;
 }
 
+TreeNode *maxValueNode(TreeNode *root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    TreeNode *current = root;
+
+    while (current && current->right != NULL) {
+        current = current->right;
+    }
+
+    return current;
+}
+
 TreeNode *deleteByKey(TreeNode *root, int key) {
     if (root == NULL) {
         return NULL;
@@ -212,33 +226,65 @@ void freeWeightBalancedTree(WeightBalancedTree *tree) {
     free(tree);
 }
 
-void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures) {
+void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
+                              int *falsePositive, int *falseNegative) {
     if (root == NULL) {
         return;
     }
 
     if (root->weight > threshold) {
+        int isAnomaly = 0;
         for (int i = 0; i < numOfFeatures; i++) {
             if (root->key == features[i]) {
-                printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
+                // printf("Anomaly is being detected with the weight of tree is %d\n", root->weight);
+                isAnomaly = 1;
+                break;
+            }
+        }
+
+        if (isAnomaly) {
+            (*truePositive)++;
+        } else {
+            (*falsePositive)++;
+        }
+
+        if (isAnomaly) {
+            (*truePositive)++;
+        } else {
+            if (root->numOfAnomaly > 0) {
+                (*falseNegative)++;
             }
         }
     }
+
+    detectAnomaliesOperation(root->left, threshold, features, numOfFeatures, truePositive, falsePositive,
+                             falseNegative);
+    detectAnomaliesOperation(root->right, threshold, features, numOfFeatures, truePositive, falsePositive,
+                             falseNegative);
 }
 
 // instead using O(n) or linear time, how about if using constant time?
 // so we just remove the features classification and only use max threshold
-int constantDetectAnomaly(TreeNode *root, int threshold) {
+int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
     if (root == NULL) {
         return 0;
     }
 
     if (root->weight > threshold) {
-        return -1;
+        if (root->numOfAnomaly > 0) {
+            (*truePositive)++;
+            return -1;
+        } else {
+            (*falsePositive)++;
+        }
+    } else {
+        if (root->numOfAnomaly > 0) {
+            (*falseNegative++);
+        }
     }
 
-    int findRightAnomaly = constantDetectAnomaly(root->right, threshold);
-    int findLeftAnomaly = constantDetectAnomaly(root->left, threshold);
+    int findRightAnomaly = constantDetectAnomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
+    int findLeftAnomaly = constantDetectAnomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
 
     if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
         return -1;
@@ -247,15 +293,18 @@ int constantDetectAnomaly(TreeNode *root, int threshold) {
     return 0;
 }
 
-int constantDetection(WeightBalancedTree *tree, int threshold) {
+int constantDetection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
+                      int *falseNegative) {
     if (tree->root != NULL) {
-        return constantDetectAnomaly(tree->root, threshold);
+        return constantDetectAnomaly(tree->root, threshold, truePositive, falsePositive, falseNegative);
     }
 }
 
-void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures) {
+void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
+                     int *falsePositive, int *falseNegative) {
     if (tree->root != NULL) {
-        detectAnomaliesOperation(tree->root, threshold, features, numOfFeatures);
+        detectAnomaliesOperation(tree->root, threshold, features, numOfFeatures, truePositive, falsePositive,
+                                 falseNegative);
     }
 }
 
@@ -297,18 +346,25 @@ int main() {
 
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int maxTreshold = 10;
+        int maxTreshold = 0;
         int *features = dataset[i];
         size_t numOfFeatures = SIZEOF(dataset[i]);
-        detectAnomalies(tree, maxTreshold, features, numOfFeatures);
+        int initialTruePositive = 0;
+        int initialFalsePositive = 0;
+        int initialFalseNegative = 0;
+        detectAnomalies(tree, maxTreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
+                        &initialFalseNegative);
     }
     endBenchmark(&benchmark);
     double findingAnomalies = getBenchmarkResult(&benchmark);
 
     startBenchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int maxTreshold = 10;
-        constantDetection(tree, maxTreshold);
+        int maxTreshold = 0;
+        int initialTruePositive = 0;
+        int initialFalsePositive = 0;
+        int initialFalseNegative = 0;
+        constantDetection(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     }
     endBenchmark(&benchmark);
     double findingAnomaly = getBenchmarkResult(&benchmark);

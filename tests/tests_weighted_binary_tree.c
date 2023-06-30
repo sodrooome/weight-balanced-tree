@@ -23,7 +23,7 @@ void weightBalancedBinaryTreeTests() {
     printf("Assertion for searching key (invalid key) %i %s \n", searchKey, result ? "Is Found" : "Not Found");
 
     int delKey = 11;
-    tree->root = deleteByKey(root, delKey);
+    tree->root = deleteByKey(tree->root, delKey);
 
     // this will lead to other segmentation fault errors
     // TODO: fix what causing this error before the deletion process (rebalance process)
@@ -33,21 +33,53 @@ void weightBalancedBinaryTreeTests() {
     printf("Assertion after deletion the key: %i should be removed, status: %s \n", searchKey,
            result ? "Removed" : "Not Removed");
 
-    int maxThreshold = 7;
-    int findAnomaly = constantDetectAnomaly(root, maxThreshold);
+    int initialTruePositive = 0;
+    int initialFalsePositive = 0;
+    int initialFalseNegative = 0;
+
+    int maxThreshold = 0;
+    int findAnomaly = constantDetectAnomaly(tree->root, maxThreshold, &initialTruePositive, &initialFalsePositive,
+                                            &initialFalseNegative);
     if (findAnomaly < 0) {
         handleErrors(findAnomaly);
     } else {
+        printf("Weight: %i \n", tree->root->weight);
         printf("No anomalies that being found, result of finding anomalies is: %i \n", findAnomaly);
     }
 
-    int setOfFeatures[3] = {11, 12, 18};
+    float detectPrecision = calculatePrecision(initialTruePositive, initialFalsePositive);
+    float detectRecall = calculateRecall(initialTruePositive, initialFalseNegative);
+    float detectF1Score = calculateF1Score(detectPrecision, detectRecall);
+    printf("Precision result (constant-time): %.2f%%\n", detectPrecision * 100);
+    printf("Recall result (constant-time): %2.f%%\n", detectRecall * 100);
+    printf("F1 score result (constant-time): %2.f%%\n", detectF1Score * 100);
+
+    int setOfFeatures[1] = {2};
     maxThreshold = 0;
     int *features = setOfFeatures;
-    int numOfFeatures = 3;
+    int numOfFeatures = 1;
     // debug purposes, might've removed later on
     // printf("Weight of root: %i \n", tree->root->weight);
-    detectAnomalies(tree, maxThreshold, features, numOfFeatures);
+    // manual calculation -> tp = 1 (since the value of features is in the TreeNode)
+    // and fp = 0: 1 / (1 + 0) -> 1.0 (100 %)
+    detectAnomalies(tree, maxThreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
+                    &initialFalseNegative);
+    float precision = calculatePrecision(initialTruePositive, initialFalsePositive);
+    float recall = calculateRecall(initialTruePositive, initialFalseNegative);
+
+    // calculate the F1 score based on the precision and recall scores
+    float f1Score = calculateF1Score(precision, recall);
+
+    // if the anomaly score is exceeds the max threshold, it would be identified the tree as anomaly
+    int anomalyScores = tree->root->weight;
+    if (anomalyScores > maxThreshold) {
+        printf("Anomaly is being detected with the score: %i \n", anomalyScores);
+    } else {
+        printf("No anomalies \n");
+    }
+    printf("F1 result: %.2f%%\n", f1Score * 100);
+    printf("Precision result: %.2f%%\n", precision * 100);
+    printf("Recall result: %.2f%%\n", recall * 100);
 
     freeTree(tree->root);
 }
