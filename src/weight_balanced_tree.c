@@ -242,17 +242,13 @@ void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int 
             }
         }
 
-        if (isAnomaly) {
-            (*truePositive)++;
-        } else {
-            (*falsePositive)++;
-        }
-
-        if (isAnomaly) {
+        if (isAnomaly == 0) {
             (*truePositive)++;
         } else {
             if (root->numOfAnomaly > 0) {
                 (*falseNegative)++;
+            } else {
+                (*falsePositive)++;
             }
         }
     }
