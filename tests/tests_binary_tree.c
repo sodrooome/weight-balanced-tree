@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "../include/tree.h"
 
 void binaryTreeTests() {
