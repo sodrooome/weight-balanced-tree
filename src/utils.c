@@ -59,6 +59,10 @@ double getBenchmarkResult(BenchmarkResult *result) {
     return result->duration;
 }
 
+float calculateAccuracy(int truePositive, int trueNegative, int falsePositive, int falseNegative) {
+    return (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+}
+
 float calculatePrecision(int truePositive, int falsePositive) {
     return (float)truePositive / (truePositive + falsePositive);
 }
