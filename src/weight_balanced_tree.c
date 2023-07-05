@@ -275,7 +275,7 @@ int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int 
         }
     } else {
         if (root->numOfAnomaly > 0) {
-            (*falseNegative++);
+            (*falseNegative)++;
         }
     }
 
@@ -294,6 +294,8 @@ int constantDetection(WeightBalancedTree *tree, int threshold, int *truePositive
     if (tree->root != NULL) {
         return constantDetectAnomaly(tree->root, threshold, truePositive, falsePositive, falseNegative);
     }
+
+    return 0;
 }
 
 void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
