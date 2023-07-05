@@ -19,6 +19,7 @@ double getBenchmarkResult(BenchmarkResult *result);
 float calculatePrecision(int truePositive, int falsePositive);
 float calculateRecall(int truePositive, int falseNegative);
 float calculateF1Score(float precision, float recall);
+float calculateAccuracy(int truePositive, int trueNegative, int falsePositive, int falseNegative);
 void anomalySorting(double *anomalyScores, int *actualLabels, int numOfSamples);
 void startBenchmark(BenchmarkResult *result);
 void endBenchmark(BenchmarkResult *result);

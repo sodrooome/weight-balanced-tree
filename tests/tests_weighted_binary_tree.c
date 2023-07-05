@@ -34,6 +34,7 @@ void weightBalancedBinaryTreeTests() {
            result ? "Removed" : "Not Removed");
 
     int initialTruePositive = 0;
+    int initialTrueNegative = 0;
     int initialFalsePositive = 0;
     int initialFalseNegative = 0;
 
@@ -50,9 +51,12 @@ void weightBalancedBinaryTreeTests() {
     float detectPrecision = calculatePrecision(initialTruePositive, initialFalsePositive);
     float detectRecall = calculateRecall(initialTruePositive, initialFalseNegative);
     float detectF1Score = calculateF1Score(detectPrecision, detectRecall);
+    float detectAccuracy =
+        calculateAccuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
     printf("Precision result (constant-time): %.2f%%\n", detectPrecision * 100);
     printf("Recall result (constant-time): %2.f%%\n", detectRecall * 100);
     printf("F1 score result (constant-time): %2.f%%\n", detectF1Score * 100);
+    printf("Accuracy result (constant-time): %2.f%%\n", detectAccuracy * 100);
 
     int setOfFeatures[1] = {2};
     maxThreshold = 0;
@@ -70,6 +74,9 @@ void weightBalancedBinaryTreeTests() {
     // calculate the F1 score based on the precision and recall scores
     float f1Score = calculateF1Score(precision, recall);
 
+    float accuracy =
+        calculateAccuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
+
     // if the anomaly score is exceeds the max threshold, it would be identified the tree as anomaly
     int anomalyScores = tree->root->weight;
     if (anomalyScores > maxThreshold) {
@@ -80,6 +87,7 @@ void weightBalancedBinaryTreeTests() {
     printf("F1 result: %.2f%%\n", f1Score * 100);
     printf("Precision result: %.2f%%\n", precision * 100);
     printf("Recall result: %.2f%%\n", recall * 100);
+    printf("Accuracy result: %.2f%%\n", accuracy * 100);
 
     freeTree(tree->root);
 }
