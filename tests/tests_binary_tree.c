@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "../include/tree.h"
+#include "../include/utils.h"
 
 void binaryTreeTests() {
     TreeNode *root = createNode(5);
@@ -44,13 +45,32 @@ void binaryTreeTests() {
     result = searchBinaryTree(root, deleteKey);
     printf("Assertion for deletion %i, status is: %s \n", deleteKey, result ? "Not Removed" : "Removed");
 
+    int initialTruePositive = 0;
+    int initialTrueNegative = 0;
+    int initialFalsePositive = 0;
+    int initialFalseNegative = 0;
+
     int maxThreshold = 0;
-    int findAnomaly = detectBinaryAnomaly(root, maxThreshold);
+    int findAnomaly =
+        detectBinaryAnomaly(root, maxThreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     if (findAnomaly < 0) {
         handleErrors(findAnomaly);
+        printf("Anomaly weight that found is: %i \n", root->weight);
     } else {
+        printf("Anomaly score and weight : %i %i \n", root->weight, root->numOfAnomaly);
         printf("No anomalies that being found, result of finding anomalies is: %i \n", findAnomaly);
     }
+
+    float precisionResult = calculatePrecision(initialTruePositive, initialFalsePositive);
+    float accuracyResult =
+        calculateAccuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
+    float recallResult = calculateRecall(initialTruePositive, initialFalseNegative);
+    float f1ScoreResult = calculateF1Score(precisionResult, recallResult);
+
+    printf("Precision result: %2.f%% \n", precisionResult * 100);
+    printf("Recall result: %2.f%% \n", recallResult * 100);
+    printf("F1 Score result: %2.f%% \n", f1ScoreResult * 100);
+    printf("Accuracy result: %2.f%% \n", accuracyResult * 100);
 
     freeTree(root);
 }

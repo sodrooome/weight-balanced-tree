@@ -116,17 +116,24 @@ TreeNode *insertBinaryTree(TreeNode *root, int key) {
     return root;
 }
 
-int detectBinaryAnomaly(TreeNode *root, int threshold) {
+int detectBinaryAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
     if (root == NULL) {
         return 0;
     }
 
     if (root->weight > threshold) {
-        return -1;
+        if (root->numOfAnomaly > 0) {
+            (*truePositive)++;
+            return -1;
+        } else {
+            (*falsePositive)++;
+        }
+    } else {
+        (*falseNegative)++;
     }
 
-    int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold);
-    int findRightAnomaly = detectBinaryAnomaly(root->right, threshold);
+    int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
+    int findRightAnomaly = detectBinaryAnomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
 
     if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
         return -1;
@@ -211,7 +218,10 @@ int main() {
         int insertKey = dataset[i][0];
         createNode(insertKey);
         int maxTreshold = 0;
-        detectBinaryAnomaly(tree, maxTreshold);
+        int initialTruePositive = 0;
+        int initialFalseNegative = 0;
+        int initialFalsePositive = 0;
+        detectBinaryAnomaly(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     }
     endBenchmark(&benchmark);
     double findingAnomalies = getBenchmarkResult(&benchmark);

@@ -22,7 +22,7 @@ int searchBinaryTree(TreeNode *root, int key);
 int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative);
 int constantDetection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
                       int *falseNegative);
-int detectBinaryAnomaly(TreeNode *root, int threshold);
+int detectBinaryAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative);
 void updatedSize(TreeNode *root);
 void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
                               int *falsePositive, int *falseNegative);
