@@ -4,16 +4,16 @@
 #include "../include/utils.h"
 
 void binaryTreeTests() {
-    TreeNode *root = createNode(5);
-    insertBinaryTree(root, 3);
-    insertBinaryTree(root, 5);
-    insertBinaryTree(root, 4);
-    insertBinaryTree(root, 8);
-    insertBinaryTree(root, 2);
-    insertBinaryTree(root, 6);
+    TreeNode *root = create_node(5);
+    insert_binary_tree(root, 3);
+    insert_binary_tree(root, 5);
+    insert_binary_tree(root, 4);
+    insert_binary_tree(root, 8);
+    insert_binary_tree(root, 2);
+    insert_binary_tree(root, 6);
 
-    TreeNode *minValue = minValueNode(root);
-    TreeNode *maxValue = maxValueNode(root);
+    TreeNode *minValue = min_value_node(root);
+    TreeNode *maxValue = max_value_node(root);
 
     if (root != NULL && root->numOfAnomaly == 0) {
         // for temporary, i will increment the num of anomaly
@@ -42,16 +42,16 @@ void binaryTreeTests() {
     }
 
     int searchKey = 4;
-    int result = searchBinaryTree(root, searchKey);
+    int result = search_binary_tree(root, searchKey);
     printf("Assertion for searching %i %s \n", searchKey, result ? "Is Found" : "Not Found");
 
     searchKey = 11;
-    result = searchBinaryTree(root, searchKey);
+    result = search_binary_tree(root, searchKey);
     printf("Assertion for searching %i %s \n", searchKey, result ? "Is Found" : "Not Found");
 
     int deleteKey = 4;
-    root = deleteByKey(root, deleteKey);
-    result = searchBinaryTree(root, deleteKey);
+    root = delete_by_key(root, deleteKey);
+    result = search_binary_tree(root, deleteKey);
     printf("Assertion for deletion %i, status is: %s \n", deleteKey, result ? "Not Removed" : "Removed");
 
     int initialTruePositive = 0;
@@ -61,8 +61,8 @@ void binaryTreeTests() {
 
     int maxThreshold = 0;
     int findAnomaly =
-        detectBinaryAnomaly(root, maxThreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
-    printf("Anomaly score is: %2.f% and the weight is: %i \n", root->numOfAnomaly, root->weight);
+        detect_binary_anomaly(root, maxThreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
+    printf("Anomaly score is: %i and the weight is: %i \n", root->numOfAnomaly, root->weight);
 
     float precisionResult = calculate_precision(initialTruePositive, initialFalsePositive);
     float accuracyResult =
@@ -75,5 +75,5 @@ void binaryTreeTests() {
     printf("F1 Score result: %2.f%% \n", f1ScoreResult * 100);
     printf("Accuracy result: %2.f%% \n", accuracyResult * 100);
 
-    freeTree(root);
+    free_tree(root);
 }
