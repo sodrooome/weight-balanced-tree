@@ -317,32 +317,32 @@ int main() {
 
     WeightBalancedTree *tree = newWeightBalancedTree();
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int insertKey = dataset[i][0];
         int numOfAnomaly = 1;
         insert(tree, insertKey, numOfAnomaly);
     }
-    endBenchmark(&benchmark);
-    double insertionTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double insertionTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int searchKey = dataset[i][0];
         searchOperation(tree->root, searchKey);
     }
-    endBenchmark(&benchmark);
-    double searchingTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double searchingTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int deleteKey = dataset[i][0];
         deleteByKey(tree->root, deleteKey);
     }
-    endBenchmark(&benchmark);
-    double deleteTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double deleteTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int maxTreshold = 0;
         int *features = dataset[i];
@@ -353,10 +353,10 @@ int main() {
         detectAnomalies(tree, maxTreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
                         &initialFalseNegative);
     }
-    endBenchmark(&benchmark);
-    double findingAnomalies = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double findingAnomalies = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int maxTreshold = 0;
         int initialTruePositive = 0;
@@ -364,8 +364,8 @@ int main() {
         int initialFalseNegative = 0;
         constantDetection(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     }
-    endBenchmark(&benchmark);
-    double findingAnomaly = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double findingAnomaly = get_benchmark_result(&benchmark);
 
     weightBalancedBinaryTreeTests();
 

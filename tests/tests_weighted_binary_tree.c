@@ -42,17 +42,17 @@ void weightBalancedBinaryTreeTests() {
     int findAnomaly = constantDetectAnomaly(tree->root, maxThreshold, &initialTruePositive, &initialFalsePositive,
                                             &initialFalseNegative);
     if (findAnomaly < 0) {
-        handleErrors(findAnomaly);
+        handle_errors(findAnomaly);
     } else {
         printf("Weight: %i \n", tree->root->weight);
         printf("No anomalies that being found, result of finding anomalies is: %i \n", findAnomaly);
     }
 
-    float detectPrecision = calculatePrecision(initialTruePositive, initialFalsePositive);
-    float detectRecall = calculateRecall(initialTruePositive, initialFalseNegative);
-    float detectF1Score = calculateF1Score(detectPrecision, detectRecall);
+    float detectPrecision = calculate_precision(initialTruePositive, initialFalsePositive);
+    float detectRecall = calculate_recall(initialTruePositive, initialFalseNegative);
+    float detectF1Score = calculate_f1_score(detectPrecision, detectRecall);
     float detectAccuracy =
-        calculateAccuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
+        calculate_accuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
     printf("Precision result (constant-time): %.2f%%\n", detectPrecision * 100);
     printf("Recall result (constant-time): %2.f%%\n", detectRecall * 100);
     printf("F1 score result (constant-time): %2.f%%\n", detectF1Score * 100);
@@ -68,14 +68,14 @@ void weightBalancedBinaryTreeTests() {
     // and fp = 0: 1 / (1 + 0) -> 1.0 (100 %)
     detectAnomalies(tree, maxThreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
                     &initialFalseNegative);
-    float precision = calculatePrecision(initialTruePositive, initialFalsePositive);
-    float recall = calculateRecall(initialTruePositive, initialFalseNegative);
+    float precision = calculate_precision(initialTruePositive, initialFalsePositive);
+    float recall = calculate_recall(initialTruePositive, initialFalseNegative);
 
     // calculate the F1 score based on the precision and recall scores
-    float f1Score = calculateF1Score(precision, recall);
+    float f1Score = calculate_f1_score(precision, recall);
 
     float accuracy =
-        calculateAccuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
+        calculate_accuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
 
     // if the anomaly score is exceeds the max threshold, it would be identified the tree as anomaly
     int anomalyScores = tree->root->weight;
