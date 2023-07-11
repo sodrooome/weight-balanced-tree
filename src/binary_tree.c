@@ -124,7 +124,7 @@ int detectBinaryAnomaly(TreeNode *root, int threshold, int *truePositive, int *f
     if (root->weight > threshold) {
         if (root->numOfAnomaly > 0) {
             (*truePositive)++;
-            return -1;
+            return 1;
         } else {
             (*falsePositive)++;
         }
@@ -135,8 +135,8 @@ int detectBinaryAnomaly(TreeNode *root, int threshold, int *truePositive, int *f
     int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
     int findRightAnomaly = detectBinaryAnomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
 
-    if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
-        return -1;
+    if (findLeftAnomaly == 1 && findRightAnomaly == 1) {
+        return 1;
     }
 
     return 0;
@@ -174,46 +174,46 @@ int main() {
     insertBinaryTree(tree, 2);
     insertBinaryTree(tree, 6);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     minValueNode(tree);
-    endBenchmark(&benchmark);
-    double findingMinValue = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double findingMinValue = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     maxValueNode(tree);
-    endBenchmark(&benchmark);
-    double findingMaxValue = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double findingMaxValue = get_benchmark_result(&benchmark);
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++) {
         dataset[i][0] = rand() % KEYS;
     }
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int insertKey = dataset[i][0];
         createNode(insertKey);
     }
-    endBenchmark(&benchmark);
-    double insertionTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double insertionTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int searchKey = dataset[i][0];
         searchBinaryTree(tree, searchKey);
     }
-    endBenchmark(&benchmark);
-    double searchTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double searchTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int deleteKey = dataset[i][0];
         deleteByKey(tree, deleteKey);
     }
-    endBenchmark(&benchmark);
-    double deleteTime = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double deleteTime = get_benchmark_result(&benchmark);
 
-    startBenchmark(&benchmark);
+    start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int insertKey = dataset[i][0];
         createNode(insertKey);
@@ -223,8 +223,8 @@ int main() {
         int initialFalsePositive = 0;
         detectBinaryAnomaly(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     }
-    endBenchmark(&benchmark);
-    double findingAnomalies = getBenchmarkResult(&benchmark);
+    end_benchmark(&benchmark);
+    double findingAnomalies = get_benchmark_result(&benchmark);
 
     // Implementation of Anomaly detection using HTTP request
     // TODO: fix this request, since it will got an error from response
@@ -256,7 +256,6 @@ int main() {
 
     binaryTreeTests();
 
-    printf("Weight: %i \n", tree->weight);
     printf("Measuring finding minimum key: %f seconds \n", findingMinValue);
     printf("Measuring finding maximum key: %f seconds \n", findingMaxValue);
     printf("Measuring insertion time: %f seconds \n", insertionTime);
