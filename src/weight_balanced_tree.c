@@ -12,7 +12,7 @@
 #define KEYS 10000
 #define SIZEOF(arr) sizeof(arr) / sizeof(*arr)
 
-WeightBalancedTree *newWeightBalancedTree() {
+WeightBalancedTree *new_weight_balanced_tree() {
     WeightBalancedTree *tree = (WeightBalancedTree *)malloc(sizeof(WeightBalancedTree));
     if (tree == NULL) {
         fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
@@ -23,7 +23,7 @@ WeightBalancedTree *newWeightBalancedTree() {
     return tree;
 }
 
-TreeNode *createNode(int key) {
+TreeNode *create_node(int key) {
     TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
     if (node == NULL) {
         fprintf(stderr, "Failed to allocate memory location %s \n", strerror(errno));
@@ -38,15 +38,15 @@ TreeNode *createNode(int key) {
     return node;
 }
 
-int searchOperation(TreeNode *root, int key) {
+int search_operation(TreeNode *root, int key) {
     if (root == NULL || root->key == key) {
         return root != NULL;
     }
 
     if (key > root->key) {
-        return searchOperation(root->left, key);
+        return search_operation(root->left, key);
     } else {
-        return searchOperation(root->right, key);
+        return search_operation(root->right, key);
     }
 }
 
@@ -57,7 +57,7 @@ int size(TreeNode *root) {
     return root->weight;
 }
 
-void updatedSize(TreeNode *root) {
+void updated_size(TreeNode *root) {
     if (root == NULL) {
         printf("Tree is not initialized yet \n");
         return;
@@ -65,31 +65,31 @@ void updatedSize(TreeNode *root) {
     root->weight = 1 + size(root->left) + size(root->right);
 }
 
-TreeNode *rotateRight(TreeNode *root) {
+TreeNode *rotate_right(TreeNode *root) {
     TreeNode *newRoot = root->left;
     if (newRoot == NULL) {
         return root;
     }
     root->left = newRoot->right;
     newRoot->right = root;
-    updatedSize(root);
-    updatedSize(newRoot);
+    updated_size(root);
+    updated_size(newRoot);
     return newRoot;
 }
 
-TreeNode *rotateLeft(TreeNode *root) {
+TreeNode *rotate_left(TreeNode *root) {
     TreeNode *newRoot = root->right;
     if (newRoot == NULL) {
         return root;
     }
     root->right = newRoot->left;
     newRoot->left = root;
-    updatedSize(root);
-    updatedSize(newRoot);
+    updated_size(root);
+    updated_size(newRoot);
     return newRoot;
 }
 
-TreeNode *balancedSize(TreeNode *root) {
+TreeNode *balanced_size(TreeNode *root) {
     if (root == NULL) {
         return NULL;
     }
@@ -98,38 +98,38 @@ TreeNode *balancedSize(TreeNode *root) {
 
     if (root->left != NULL && size(root->left) < (2 * size(root->right))) {
         if (root->right != NULL && size(root->right->left) > size(root->right->right)) {
-            root->right = rotateRight(root->right);
+            root->right = rotate_right(root->right);
         }
-        root = rotateRight(root);
+        root = rotate_right(root);
     }
 
     if (root->right != NULL && size(root->right) > (2 * size(root->left))) {
         if (root->left != NULL && size(root->left->right) > size(root->left->left)) {
-            root->left = rotateLeft(root->left);
+            root->left = rotate_left(root->left);
         }
-        root = rotateLeft(root);
+        root = rotate_left(root);
     }
 
     return root;
 }
 
-TreeNode *insertKey(TreeNode *root, int key) {
+TreeNode *insert_key(TreeNode *root, int key) {
     if (root == NULL) {
-        return createNode(key);
+        return create_node(key);
     }
 
     if (root->key == key) {
         root->numOfAnomaly += 1;
     } else if (key > root->key) {
-        root->left = insertKey(root->left, key);
+        root->left = insert_key(root->left, key);
     } else if (key < root->key) {
-        root->right = insertKey(root->right, key);
+        root->right = insert_key(root->right, key);
     }
 
-    return balancedSize(root);
+    return balanced_size(root);
 }
 
-TreeNode *minValueNode(TreeNode *root) {
+TreeNode *min_value_node(TreeNode *root) {
     if (root == NULL) {
         return NULL;
     }
@@ -143,7 +143,7 @@ TreeNode *minValueNode(TreeNode *root) {
     return current;
 }
 
-TreeNode *maxValueNode(TreeNode *root) {
+TreeNode *max_value_node(TreeNode *root) {
     if (root == NULL) {
         return NULL;
     }
@@ -157,15 +157,15 @@ TreeNode *maxValueNode(TreeNode *root) {
     return current;
 }
 
-TreeNode *deleteByKey(TreeNode *root, int key) {
+TreeNode *delete_by_key(TreeNode *root, int key) {
     if (root == NULL) {
         return NULL;
     }
 
     if (key < root->key) {
-        root->left = deleteByKey(root->left, key);
+        root->left = delete_by_key(root->left, key);
     } else if (key > root->key) {
-        root->right = deleteByKey(root->right, key);
+        root->right = delete_by_key(root->right, key);
     } else {
         if (root->left == NULL && root->right == NULL) {
             // handling when the root left and right if its null and just clean it up
@@ -183,9 +183,9 @@ TreeNode *deleteByKey(TreeNode *root, int key) {
             // this should be fixed the key isn't deleted, the operation of deletion
             // should be deleted based on the minimum value and usually if we talked
             // about binary tree, the lowest value in tree it's come from right tree
-            TreeNode *minRightSubtree = minValueNode(root->right);
+            TreeNode *minRightSubtree = min_value_node(root->right);
             root->key = minRightSubtree->key;
-            root->right = deleteByKey(root->right, minRightSubtree->key);
+            root->right = delete_by_key(root->right, minRightSubtree->key);
         }
     }
 
@@ -199,19 +199,19 @@ void insert(WeightBalancedTree *tree, int key, __attribute__((unused)) int anoma
     }
 
     if (tree->root == NULL) {
-        tree->root = createNode(key);
+        tree->root = create_node(key);
     } else {
-        tree->root = insertKey(tree->root, key);
+        tree->root = insert_key(tree->root, key);
     }
 }
 
-void freeTree(TreeNode *root) {
+void free_tree(TreeNode *root) {
     if (root == NULL) {
         return;
     }
 
-    freeTree(root->left);
-    freeTree(root->right);
+    free_tree(root->left);
+    free_tree(root->right);
     free(root);
 }
 
@@ -222,12 +222,12 @@ void freeWeightBalancedTree(WeightBalancedTree *tree) {
         return;
     }
 
-    freeTree(tree->root);
+    free_tree(tree->root);
     free(tree);
 }
 
-void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
-                              int *falsePositive, int *falseNegative) {
+void detect_anomalies_operation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
+                                int *falsePositive, int *falseNegative) {
     if (root == NULL) {
         return;
     }
@@ -253,15 +253,15 @@ void detectAnomaliesOperation(TreeNode *root, int threshold, int *features, int 
         }
     }
 
-    detectAnomaliesOperation(root->left, threshold, features, numOfFeatures, truePositive, falsePositive,
-                             falseNegative);
-    detectAnomaliesOperation(root->right, threshold, features, numOfFeatures, truePositive, falsePositive,
-                             falseNegative);
+    detect_anomalies_operation(root->left, threshold, features, numOfFeatures, truePositive, falsePositive,
+                               falseNegative);
+    detect_anomalies_operation(root->right, threshold, features, numOfFeatures, truePositive, falsePositive,
+                               falseNegative);
 }
 
 // instead using O(n) or linear time, how about if using constant time?
 // so we just remove the features classification and only use max threshold
-int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
+int constant_detect_anomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
     if (root == NULL) {
         return 0;
     }
@@ -279,8 +279,8 @@ int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int 
         }
     }
 
-    int findRightAnomaly = constantDetectAnomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
-    int findLeftAnomaly = constantDetectAnomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
+    int findRightAnomaly = constant_detect_anomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
+    int findLeftAnomaly = constant_detect_anomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
 
     if (findLeftAnomaly == -1 && findRightAnomaly == -1) {
         return -1;
@@ -289,20 +289,20 @@ int constantDetectAnomaly(TreeNode *root, int threshold, int *truePositive, int 
     return 0;
 }
 
-int constantDetection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
-                      int *falseNegative) {
+int constant_detection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
+                       int *falseNegative) {
     if (tree->root != NULL) {
-        return constantDetectAnomaly(tree->root, threshold, truePositive, falsePositive, falseNegative);
+        return constant_detect_anomaly(tree->root, threshold, truePositive, falsePositive, falseNegative);
     }
 
     return 0;
 }
 
-void detectAnomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
-                     int *falsePositive, int *falseNegative) {
+void detect_anomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
+                      int *falsePositive, int *falseNegative) {
     if (tree->root != NULL) {
-        detectAnomaliesOperation(tree->root, threshold, features, numOfFeatures, truePositive, falsePositive,
-                                 falseNegative);
+        detect_anomalies_operation(tree->root, threshold, features, numOfFeatures, truePositive, falsePositive,
+                                   falseNegative);
     }
 }
 
@@ -315,7 +315,7 @@ int main() {
         dataset[i][0] = rand() % KEYS;
     }
 
-    WeightBalancedTree *tree = newWeightBalancedTree();
+    WeightBalancedTree *tree = new_weight_balanced_tree();
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
@@ -329,7 +329,7 @@ int main() {
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int searchKey = dataset[i][0];
-        searchOperation(tree->root, searchKey);
+        search_operation(tree->root, searchKey);
     }
     end_benchmark(&benchmark);
     double searchingTime = get_benchmark_result(&benchmark);
@@ -337,7 +337,7 @@ int main() {
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
         int deleteKey = dataset[i][0];
-        deleteByKey(tree->root, deleteKey);
+        delete_by_key(tree->root, deleteKey);
     }
     end_benchmark(&benchmark);
     double deleteTime = get_benchmark_result(&benchmark);
@@ -350,8 +350,8 @@ int main() {
         int initialTruePositive = 0;
         int initialFalsePositive = 0;
         int initialFalseNegative = 0;
-        detectAnomalies(tree, maxTreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
-                        &initialFalseNegative);
+        detect_anomalies(tree, maxTreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
+                         &initialFalseNegative);
     }
     end_benchmark(&benchmark);
     double findingAnomalies = get_benchmark_result(&benchmark);
@@ -362,7 +362,7 @@ int main() {
         int initialTruePositive = 0;
         int initialFalsePositive = 0;
         int initialFalseNegative = 0;
-        constantDetection(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
+        constant_detection(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
     }
     end_benchmark(&benchmark);
     double findingAnomaly = get_benchmark_result(&benchmark);

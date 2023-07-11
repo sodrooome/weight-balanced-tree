@@ -4,7 +4,7 @@
 #include "../include/tree.h"
 
 void weightBalancedBinaryTreeTests() {
-    WeightBalancedTree *tree = newWeightBalancedTree();
+    WeightBalancedTree *tree = new_weight_balanced_tree();
     TreeNode *root = NULL;
     insert(tree, 1, 0);
     insert(tree, 3, 0);
@@ -15,21 +15,21 @@ void weightBalancedBinaryTreeTests() {
 
     printf("=== Weighted Binary Tree Tests === \n");
     int searchKey = 1;
-    int result = searchOperation(tree->root, searchKey);
+    int result = search_operation(tree->root, searchKey);
     printf("Assertion for searching key %i %s \n", searchKey, result ? "Found" : "Not Found");
 
     searchKey = 19;
-    result = searchOperation(tree->root, searchKey);
+    result = search_operation(tree->root, searchKey);
     printf("Assertion for searching key (invalid key) %i %s \n", searchKey, result ? "Is Found" : "Not Found");
 
     int delKey = 11;
-    tree->root = deleteByKey(tree->root, delKey);
+    tree->root = delete_by_key(tree->root, delKey);
 
     // this will lead to other segmentation fault errors
     // TODO: fix what causing this error before the deletion process (rebalance process)
     // printf("Assertion for deleting key %d \n", tree->root->key);
     searchKey = 11;
-    result = searchOperation(tree->root, searchKey);
+    result = search_operation(tree->root, searchKey);
     printf("Assertion after deletion the key: %i should be removed, status: %s \n", searchKey,
            result ? "Removed" : "Not Removed");
 
@@ -39,8 +39,8 @@ void weightBalancedBinaryTreeTests() {
     int initialFalseNegative = 0;
 
     int maxThreshold = 0;
-    int findAnomaly = constantDetectAnomaly(tree->root, maxThreshold, &initialTruePositive, &initialFalsePositive,
-                                            &initialFalseNegative);
+    int findAnomaly = constant_detect_anomaly(tree->root, maxThreshold, &initialTruePositive, &initialFalsePositive,
+                                              &initialFalseNegative);
     if (findAnomaly < 0) {
         handle_errors(findAnomaly);
     } else {
@@ -66,8 +66,8 @@ void weightBalancedBinaryTreeTests() {
     // printf("Weight of root: %i \n", tree->root->weight);
     // manual calculation -> tp = 1 (since the value of features is in the TreeNode)
     // and fp = 0: 1 / (1 + 0) -> 1.0 (100 %)
-    detectAnomalies(tree, maxThreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
-                    &initialFalseNegative);
+    detect_anomalies(tree, maxThreshold, features, numOfFeatures, &initialTruePositive, &initialFalsePositive,
+                     &initialFalseNegative);
     float precision = calculate_precision(initialTruePositive, initialFalsePositive);
     float recall = calculate_recall(initialTruePositive, initialFalseNegative);
 
@@ -89,5 +89,5 @@ void weightBalancedBinaryTreeTests() {
     printf("Recall result: %.2f%%\n", recall * 100);
     printf("Accuracy result: %.2f%%\n", accuracy * 100);
 
-    freeTree(tree->root);
+    free_tree(tree->root);
 }
