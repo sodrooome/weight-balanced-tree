@@ -5,21 +5,21 @@
 #include <stdlib.h>
 #include <time.h>
 
-double getRandomNumber(int minValue, int maxValue) {
-    return minValue + (double)rand() / RAND_MAX * (maxValue - minValue);
+double get_random_number(int min_value, int max_value) {
+    return min_value + (double)rand() / RAND_MAX * (max_value - min_value);
 }
 
-void startBenchmark(BenchmarkResult *result) {
+void start_benchmark(BenchmarkResult *result) {
     result->start = clock();
 }
 
-void endBenchmark(BenchmarkResult *result) {
+void end_benchmark(BenchmarkResult *result) {
     result->end = clock();
     result->duration = (double)(result->end - result->start) / CLOCKS_PER_SEC;
 }
 
-void handleErrors(int returnedCode) {
-    switch (returnedCode) {
+void handle_errors(int returned_code) {
+    switch (returned_code) {
         case -1:
             printf("Anomaly is being detected \n");
             break;
@@ -33,17 +33,17 @@ void handleErrors(int returnedCode) {
 
 // copy-paste from here https://www.programiz.com/dsa/bubble-sort with
 // several adjustment... but yeah
-void anomalySorting(double *anomalyScores, int *actualLabels, int numOfSamples) {
-    for (int i = 0; i < numOfSamples - 1; i++) {
-        for (int j = 0; j < numOfSamples - i - 1; j++) {
-            if (anomalyScores[j] < anomalyScores[j + 1]) {
-                double tempAnomalyScore = anomalyScores[j];
-                anomalyScores[j] = anomalyScores[j + 1];
-                anomalyScores[j + 1] = tempAnomalyScore;
+void anomaly_sorting(double *anomaly_scores, int *actual_labels, int num_of_samples) {
+    for (int i = 0; i < num_of_samples - 1; i++) {
+        for (int j = 0; j < num_of_samples - i - 1; j++) {
+            if (anomaly_scores[j] < anomaly_scores[j + 1]) {
+                double temp_anomaly_score = anomaly_scores[j];
+                anomaly_scores[j] = anomaly_scores[j + 1];
+                anomaly_scores[j + 1] = temp_anomaly_score;
 
-                int tempLabels = actualLabels[j];
-                actualLabels[j] = actualLabels[j + 1];
-                actualLabels[j + 1] = tempLabels;
+                int temp_labels = actual_labels[j];
+                actual_labels[j] = actual_labels[j + 1];
+                actual_labels[j + 1] = temp_labels;
             }
         }
     }
@@ -51,27 +51,27 @@ void anomalySorting(double *anomalyScores, int *actualLabels, int numOfSamples) 
 
 // TODO: implement the AUC-ROC evaluation metrics using
 // a simple bubble sort algorithm for sorting the anomaly score
-void calculateAucRoc(double *anomalyScores, int *actualLabels, int numOfSamples) {
-    anomalySorting(anomalyScores, actualLabels, numOfSamples);
+void calculate_aoc_roc(double *anomalyScores, int *actualLabels, int numOfSamples) {
+    anomaly_sorting(anomalyScores, actualLabels, numOfSamples);
 }
 
-double getBenchmarkResult(BenchmarkResult *result) {
+double get_benchmark_result(BenchmarkResult *result) {
     return result->duration;
 }
 
-float calculateAccuracy(int truePositive, int trueNegative, int falsePositive, int falseNegative) {
-    return (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+float calculate_accuracy(int true_positive, int true_negative, int false_positive, int false_negative) {
+    return (float)(true_positive + true_negative) / (true_positive + true_negative + false_positive + false_negative);
 }
 
-float calculatePrecision(int truePositive, int falsePositive) {
-    return (float)truePositive / (truePositive + falsePositive);
+float calculate_precision(int true_positive, int false_positive) {
+    return (float)true_positive / (true_positive + false_positive);
 }
 
-float calculateRecall(int truePositive, int falseNegative) {
-    return (float)truePositive / (truePositive + falseNegative);
+float calculate_recall(int true_positive, int false_negative) {
+    return (float)true_positive / (true_positive + false_negative);
 }
 
-float calculateF1Score(float precision, float recall) {
+float calculate_f1_score(float precision, float recall) {
     if (precision + recall == 0) {
         return 0;
     }
