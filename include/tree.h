@@ -5,7 +5,7 @@ typedef struct TreeNode TreeNode;
 struct TreeNode {
     int key;
     int weight;
-    int numOfAnomaly;
+    int num_of_anomaly;
     struct TreeNode *right;
     struct TreeNode *left;
 };
@@ -19,17 +19,18 @@ WeightBalancedTree *new_weight_balanced_tree();
 int search_operation(TreeNode *root, int key);
 int size(TreeNode *root);
 int search_binary_tree(TreeNode *root, int key);
-int constant_detect_anomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative);
-int constant_detection(WeightBalancedTree *tree, int threshold, int *truePositive, int *falsePositive,
-                       int *falseNegative);
-int detect_binary_anomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative);
+int constant_detect_anomaly(TreeNode *root, int threshold, int *true_positive, int *false_positive,
+                            int *false_negative);
+int constant_detection(WeightBalancedTree *tree, int threshold, int *true_positive, int *false_positive,
+                       int *false_negative);
+int detect_binary_anomaly(TreeNode *root, int threshold, int *true_positive, int *false_positive, int *false_negative);
 void updated_size(TreeNode *root);
-void detect_anomalies_operation(TreeNode *root, int threshold, int *features, int numOfFeatures, int *truePositive,
-                                int *falsePositive, int *falseNegative);
+void detect_anomalies_operation(TreeNode *root, int threshold, int *features, int num_of_features, int *true_positive,
+                                int *false_positive, int *false_negative);
 void insert(WeightBalancedTree *tree, int key, int anomaly);
 void free_tree(TreeNode *root);
-void detect_anomalies(WeightBalancedTree *tree, int threshold, int *features, int numOfFeatures, int *truePositive,
-                      int *falsePositive, int *falseNegative);
+void detect_anomalies(WeightBalancedTree *tree, int threshold, int *features, int num_of_features, int *true_positive,
+                      int *false_positive, int *false_negative);
 void traversal(TreeNode *root);
 TreeNode *insert_binary_tree(TreeNode *root, int key);
 TreeNode *delete_by_key(TreeNode *root, int key);

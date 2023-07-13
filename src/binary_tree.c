@@ -83,17 +83,17 @@ TreeNode *delete_by_key(TreeNode *root, int key) {
             free(root);
             return NULL;
         } else if (root->left == NULL) {
-            TreeNode *tempRoot = root->right;
+            TreeNode *temp_root = root->right;
             free(root);
-            return tempRoot;
+            return temp_root;
         } else if (root->right == NULL) {
-            TreeNode *tempRoot = root->left;
+            TreeNode *temp_root = root->left;
             free(root);
-            return tempRoot;
+            return temp_root;
         } else {
-            TreeNode *minRightSubtree = min_value_node(root->right);
-            root->key = minRightSubtree->key;
-            root->right = delete_by_key(root->right, minRightSubtree->key);
+            TreeNode *min_right_sub_tree = min_value_node(root->right);
+            root->key = min_right_sub_tree->key;
+            root->right = delete_by_key(root->right, min_right_sub_tree->key);
         }
     }
 
@@ -116,26 +116,27 @@ TreeNode *insert_binary_tree(TreeNode *root, int key) {
     return root;
 }
 
-int detect_binary_anomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
+int detect_binary_anomaly(TreeNode *root, int threshold, int *true_positive, int *false_positive, int *false_negative) {
     if (root == NULL) {
         return 0;
     }
 
     if (root->weight > threshold) {
-        if (root->numOfAnomaly > 0) {
-            (*truePositive)++;
+        if (root->num_of_anomaly > 0) {
+            (*true_positive)++;
             return 1;
         } else {
-            (*falsePositive)++;
+            (*false_positive)++;
         }
     } else {
-        (*falseNegative)++;
+        (*false_negative)++;
     }
 
-    int findLeftAnomaly = detect_binary_anomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
-    int findRightAnomaly = detect_binary_anomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
+    int find_left_anomaly = detect_binary_anomaly(root->left, threshold, true_positive, false_positive, false_negative);
+    int find_right_anomaly =
+        detect_binary_anomaly(root->right, threshold, true_positive, false_positive, false_negative);
 
-    if (findLeftAnomaly == 1 && findRightAnomaly == 1) {
+    if (find_left_anomaly == 1 && find_right_anomaly == 1) {
         return 1;
     }
 
@@ -177,12 +178,12 @@ int main() {
     start_benchmark(&benchmark);
     min_value_node(tree);
     end_benchmark(&benchmark);
-    double findingMinValue = get_benchmark_result(&benchmark);
+    double find_min_value = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     max_value_node(tree);
     end_benchmark(&benchmark);
-    double findingMaxValue = get_benchmark_result(&benchmark);
+    double find_max_value = get_benchmark_result(&benchmark);
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++) {
@@ -191,40 +192,41 @@ int main() {
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int insertKey = dataset[i][0];
-        create_node(insertKey);
+        int insert_key = dataset[i][0];
+        create_node(insert_key);
     }
     end_benchmark(&benchmark);
-    double insertionTime = get_benchmark_result(&benchmark);
+    double insertion_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int searchKey = dataset[i][0];
-        search_binary_tree(tree, searchKey);
+        int search_key = dataset[i][0];
+        search_binary_tree(tree, search_key);
     }
     end_benchmark(&benchmark);
-    double searchTime = get_benchmark_result(&benchmark);
+    double search_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int deleteKey = dataset[i][0];
-        delete_by_key(tree, deleteKey);
+        int delete_key = dataset[i][0];
+        delete_by_key(tree, delete_key);
     }
     end_benchmark(&benchmark);
-    double deleteTime = get_benchmark_result(&benchmark);
+    double delete_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int insertKey = dataset[i][0];
-        create_node(insertKey);
-        int maxTreshold = 0;
-        int initialTruePositive = 0;
-        int initialFalseNegative = 0;
-        int initialFalsePositive = 0;
-        detect_binary_anomaly(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
+        int insert_key = dataset[i][0];
+        create_node(insert_key);
+        int max_threshold = 0;
+        int initial_true_positive = 0;
+        int initial_false_negative = 0;
+        int initial_false_positive = 0;
+        detect_binary_anomaly(tree, max_threshold, &initial_true_positive, &initial_false_positive,
+                              &initial_false_negative);
     }
     end_benchmark(&benchmark);
-    double findingAnomalies = get_benchmark_result(&benchmark);
+    double finding_anomalies = get_benchmark_result(&benchmark);
 
     // Implementation of Anomaly detection using HTTP request
     // TODO: fix this request, since it will got an error from response
@@ -256,12 +258,12 @@ int main() {
 
     binaryTreeTests();
 
-    printf("Measuring finding minimum key: %f seconds \n", findingMinValue);
-    printf("Measuring finding maximum key: %f seconds \n", findingMaxValue);
-    printf("Measuring insertion time: %f seconds \n", insertionTime);
-    printf("Measuring searching time: %f seconds \n", searchTime);
-    printf("Measuring deletion time %f seconds \n", deleteTime);
-    printf("Measuring find anomalies: %f seconds \n", findingAnomalies);
+    printf("Measuring finding minimum key: %f seconds \n", find_min_value);
+    printf("Measuring finding maximum key: %f seconds \n", find_max_value);
+    printf("Measuring insertion time: %f seconds \n", insertion_time);
+    printf("Measuring searching time: %f seconds \n", search_time);
+    printf("Measuring deletion time %f seconds \n", delete_time);
+    printf("Measuring find anomalies: %f seconds \n", finding_anomalies);
 
     free_tree(tree);
 
