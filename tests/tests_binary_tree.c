@@ -4,76 +4,76 @@
 #include "../include/utils.h"
 
 void binaryTreeTests() {
-    TreeNode *root = createNode(5);
-    insertBinaryTree(root, 3);
-    insertBinaryTree(root, 5);
-    insertBinaryTree(root, 4);
-    insertBinaryTree(root, 8);
-    insertBinaryTree(root, 2);
-    insertBinaryTree(root, 6);
+    TreeNode *root = create_node(5);
+    insert_binary_tree(root, 3);
+    insert_binary_tree(root, 5);
+    insert_binary_tree(root, 4);
+    insert_binary_tree(root, 8);
+    insert_binary_tree(root, 2);
+    insert_binary_tree(root, 6);
 
-    TreeNode *minValue = minValueNode(root);
-    TreeNode *maxValue = maxValueNode(root);
+    TreeNode *min_value = min_value_node(root);
+    TreeNode *max_value = max_value_node(root);
 
-    if (root != NULL && root->numOfAnomaly == 0) {
+    if (root != NULL && root->num_of_anomaly == 0) {
         // for temporary, i will increment the num of anomaly
         // if the tree node can't capture the anomalies (or there's no anomaly at all)
         // so it can be calculated by the evaluation metrics model
-        root->numOfAnomaly = 1;
+        root->num_of_anomaly = 1;
     } else {
-        root->numOfAnomaly = 0;
+        root->num_of_anomaly = 0;
     }
 
     printf("=== Binary Tree Tests === \n");
     // Tree node is empty since i dont create the tree
     // and inserting all values into each node of tree
-    if (maxValue == NULL) {
+    if (max_value == NULL) {
         handle_errors(0);
     } else {
         int expectation = 8;
-        printf("Assertion for Max value is: %d, and the expectation is: %i \n", maxValue->key, expectation);
+        printf("Assertion for Max value is: %d, and the expectation is: %i \n", max_value->key, expectation);
     }
 
-    if (minValue == NULL) {
+    if (min_value == NULL) {
         handle_errors(0);
     } else {
         int expectation = 2;
-        printf("Assertion for Min value is: %d, and the expectation is: %i \n", minValue->key, expectation);
+        printf("Assertion for Min value is: %d, and the expectation is: %i \n", min_value->key, expectation);
     }
 
-    int searchKey = 4;
-    int result = searchBinaryTree(root, searchKey);
-    printf("Assertion for searching %i %s \n", searchKey, result ? "Is Found" : "Not Found");
+    int search_key = 4;
+    int result = search_binary_tree(root, search_key);
+    printf("Assertion for searching %i %s \n", search_key, result ? "Is Found" : "Not Found");
 
-    searchKey = 11;
-    result = searchBinaryTree(root, searchKey);
-    printf("Assertion for searching %i %s \n", searchKey, result ? "Is Found" : "Not Found");
+    search_key = 11;
+    result = search_binary_tree(root, search_key);
+    printf("Assertion for searching %i %s \n", search_key, result ? "Is Found" : "Not Found");
 
-    int deleteKey = 4;
-    root = deleteByKey(root, deleteKey);
-    result = searchBinaryTree(root, deleteKey);
-    printf("Assertion for deletion %i, status is: %s \n", deleteKey, result ? "Not Removed" : "Removed");
+    int delete_key = 4;
+    root = delete_by_key(root, delete_key);
+    result = search_binary_tree(root, delete_key);
+    printf("Assertion for deletion %i, status is: %s \n", delete_key, result ? "Not Removed" : "Removed");
 
-    int initialTruePositive = 0;
-    int initialTrueNegative = 0;
-    int initialFalsePositive = 0;
-    int initialFalseNegative = 0;
+    int initial_true_positive = 0;
+    int initial_true_negative = 0;
+    int initial_false_positive = 0;
+    int initial_false_negative = 0;
 
-    int maxThreshold = 0;
-    int findAnomaly =
-        detectBinaryAnomaly(root, maxThreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
-    printf("Anomaly score is: %2.f% and the weight is: %i \n", root->numOfAnomaly, root->weight);
+    int max_threshold = 0;
+    int find_anoamly = detect_binary_anomaly(root, max_threshold, &initial_true_positive, &initial_false_positive,
+                                             &initial_false_negative);
+    printf("Anomaly score is: %i and the weight is: %i \n", root->num_of_anomaly, root->weight);
 
-    float precisionResult = calculate_precision(initialTruePositive, initialFalsePositive);
-    float accuracyResult =
-        calculate_accuracy(initialTruePositive, initialTrueNegative, initialFalsePositive, initialFalseNegative);
-    float recallResult = calculate_recall(initialTruePositive, initialFalseNegative);
-    float f1ScoreResult = calculate_f1_score(precisionResult, recallResult);
+    float precision_result = calculate_precision(initial_true_positive, initial_false_positive);
+    float accuracy_result = calculate_accuracy(initial_true_positive, initial_true_negative, initial_false_positive,
+                                               initial_false_negative);
+    float recall_result = calculate_recall(initial_true_positive, initial_false_negative);
+    float f1_score_result = calculate_f1_score(precision_result, recall_result);
 
-    printf("Precision result: %2.f%% \n", precisionResult * 100);
-    printf("Recall result: %2.f%% \n", recallResult * 100);
-    printf("F1 Score result: %2.f%% \n", f1ScoreResult * 100);
-    printf("Accuracy result: %2.f%% \n", accuracyResult * 100);
+    printf("Precision result: %2.f%% \n", precision_result * 100);
+    printf("Recall result: %2.f%% \n", recall_result * 100);
+    printf("F1 Score result: %2.f%% \n", f1_score_result * 100);
+    printf("Accuracy result: %2.f%% \n", accuracy_result * 100);
 
-    freeTree(root);
+    free_tree(root);
 }

@@ -12,7 +12,7 @@
 #define DATASET 10000
 #define KEYS 10000
 
-int searchBinaryTree(TreeNode *root, int key) {
+int search_binary_tree(TreeNode *root, int key) {
     if (root == NULL) {
         return 0;
     }
@@ -22,13 +22,13 @@ int searchBinaryTree(TreeNode *root, int key) {
     }
 
     if (key < root->key) {
-        return searchBinaryTree(root->left, key);
+        return search_binary_tree(root->left, key);
     } else {
-        return searchBinaryTree(root->right, key);
+        return search_binary_tree(root->right, key);
     }
 }
 
-TreeNode *createNode(int key) {
+TreeNode *create_node(int key) {
     TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
     if (node == NULL) {
         fprintf(stderr, "Failed to allocate the memory into tree node %s \n", strerror(errno));
@@ -40,7 +40,7 @@ TreeNode *createNode(int key) {
     return node;
 }
 
-TreeNode *minValueNode(TreeNode *root) {
+TreeNode *min_value_node(TreeNode *root) {
     if (root == NULL) {
         return NULL;
     }
@@ -54,7 +54,7 @@ TreeNode *minValueNode(TreeNode *root) {
     return current;
 }
 
-TreeNode *maxValueNode(TreeNode *root) {
+TreeNode *max_value_node(TreeNode *root) {
     if (root == NULL) {
         return NULL;
     }
@@ -69,46 +69,46 @@ TreeNode *maxValueNode(TreeNode *root) {
 }
 
 // main source: https://www.techiedelight.com/deletion-from-bst/
-TreeNode *deleteByKey(TreeNode *root, int key) {
+TreeNode *delete_by_key(TreeNode *root, int key) {
     if (root == NULL) {
         return NULL;
     }
 
     if (key < root->key) {
-        root->left = deleteByKey(root->left, key);
+        root->left = delete_by_key(root->left, key);
     } else if (key > root->key) {
-        root->right = deleteByKey(root->right, key);
+        root->right = delete_by_key(root->right, key);
     } else {
         if (root->left == NULL && root->right == NULL) {
             free(root);
             return NULL;
         } else if (root->left == NULL) {
-            TreeNode *tempRoot = root->right;
+            TreeNode *temp_root = root->right;
             free(root);
-            return tempRoot;
+            return temp_root;
         } else if (root->right == NULL) {
-            TreeNode *tempRoot = root->left;
+            TreeNode *temp_root = root->left;
             free(root);
-            return tempRoot;
+            return temp_root;
         } else {
-            TreeNode *minRightSubtree = minValueNode(root->right);
-            root->key = minRightSubtree->key;
-            root->right = deleteByKey(root->right, minRightSubtree->key);
+            TreeNode *min_right_sub_tree = min_value_node(root->right);
+            root->key = min_right_sub_tree->key;
+            root->right = delete_by_key(root->right, min_right_sub_tree->key);
         }
     }
 
     return root;
 }
 
-TreeNode *insertBinaryTree(TreeNode *root, int key) {
+TreeNode *insert_binary_tree(TreeNode *root, int key) {
     if (root == NULL) {
-        return createNode(key);
+        return create_node(key);
     }
 
     if (key < root->key) {
-        root->left = insertBinaryTree(root->left, key);
+        root->left = insert_binary_tree(root->left, key);
     } else if (key > root->key) {
-        root->right = insertBinaryTree(root->right, key);
+        root->right = insert_binary_tree(root->right, key);
     } else {
         root->weight += 1;
     }
@@ -116,39 +116,40 @@ TreeNode *insertBinaryTree(TreeNode *root, int key) {
     return root;
 }
 
-int detectBinaryAnomaly(TreeNode *root, int threshold, int *truePositive, int *falsePositive, int *falseNegative) {
+int detect_binary_anomaly(TreeNode *root, int threshold, int *true_positive, int *false_positive, int *false_negative) {
     if (root == NULL) {
         return 0;
     }
 
     if (root->weight > threshold) {
-        if (root->numOfAnomaly > 0) {
-            (*truePositive)++;
+        if (root->num_of_anomaly > 0) {
+            (*true_positive)++;
             return 1;
         } else {
-            (*falsePositive)++;
+            (*false_positive)++;
         }
     } else {
-        (*falseNegative)++;
+        (*false_negative)++;
     }
 
-    int findLeftAnomaly = detectBinaryAnomaly(root->left, threshold, truePositive, falsePositive, falseNegative);
-    int findRightAnomaly = detectBinaryAnomaly(root->right, threshold, truePositive, falsePositive, falseNegative);
+    int find_left_anomaly = detect_binary_anomaly(root->left, threshold, true_positive, false_positive, false_negative);
+    int find_right_anomaly =
+        detect_binary_anomaly(root->right, threshold, true_positive, false_positive, false_negative);
 
-    if (findLeftAnomaly == 1 && findRightAnomaly == 1) {
+    if (find_left_anomaly == 1 && find_right_anomaly == 1) {
         return 1;
     }
 
     return 0;
 }
 
-void freeTree(TreeNode *root) {
+void free_tree(TreeNode *root) {
     if (root == NULL) {
         return;
     }
 
-    freeTree(root->left);
-    freeTree(root->right);
+    free_tree(root->left);
+    free_tree(root->right);
     free(root);
 }
 
@@ -165,24 +166,24 @@ void traversal(TreeNode *root) {
 int main() {
 
     BenchmarkResult benchmark;
-    TreeNode *tree = createNode(5);
+    TreeNode *tree = create_node(5);
 
-    insertBinaryTree(tree, 3);
-    insertBinaryTree(tree, 5);
-    insertBinaryTree(tree, 4);
-    insertBinaryTree(tree, 8);
-    insertBinaryTree(tree, 2);
-    insertBinaryTree(tree, 6);
-
-    start_benchmark(&benchmark);
-    minValueNode(tree);
-    end_benchmark(&benchmark);
-    double findingMinValue = get_benchmark_result(&benchmark);
+    insert_binary_tree(tree, 3);
+    insert_binary_tree(tree, 5);
+    insert_binary_tree(tree, 4);
+    insert_binary_tree(tree, 8);
+    insert_binary_tree(tree, 2);
+    insert_binary_tree(tree, 6);
 
     start_benchmark(&benchmark);
-    maxValueNode(tree);
+    min_value_node(tree);
     end_benchmark(&benchmark);
-    double findingMaxValue = get_benchmark_result(&benchmark);
+    double find_min_value = get_benchmark_result(&benchmark);
+
+    start_benchmark(&benchmark);
+    max_value_node(tree);
+    end_benchmark(&benchmark);
+    double find_max_value = get_benchmark_result(&benchmark);
 
     int dataset[DATASET][2];
     for (int i = 0; i < DATASET; i++) {
@@ -191,40 +192,41 @@ int main() {
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int insertKey = dataset[i][0];
-        createNode(insertKey);
+        int insert_key = dataset[i][0];
+        create_node(insert_key);
     }
     end_benchmark(&benchmark);
-    double insertionTime = get_benchmark_result(&benchmark);
+    double insertion_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int searchKey = dataset[i][0];
-        searchBinaryTree(tree, searchKey);
+        int search_key = dataset[i][0];
+        search_binary_tree(tree, search_key);
     }
     end_benchmark(&benchmark);
-    double searchTime = get_benchmark_result(&benchmark);
+    double search_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int deleteKey = dataset[i][0];
-        deleteByKey(tree, deleteKey);
+        int delete_key = dataset[i][0];
+        delete_by_key(tree, delete_key);
     }
     end_benchmark(&benchmark);
-    double deleteTime = get_benchmark_result(&benchmark);
+    double delete_time = get_benchmark_result(&benchmark);
 
     start_benchmark(&benchmark);
     for (int i = 0; i < DATASET; i++) {
-        int insertKey = dataset[i][0];
-        createNode(insertKey);
-        int maxTreshold = 0;
-        int initialTruePositive = 0;
-        int initialFalseNegative = 0;
-        int initialFalsePositive = 0;
-        detectBinaryAnomaly(tree, maxTreshold, &initialTruePositive, &initialFalsePositive, &initialFalseNegative);
+        int insert_key = dataset[i][0];
+        create_node(insert_key);
+        int max_threshold = 0;
+        int initial_true_positive = 0;
+        int initial_false_negative = 0;
+        int initial_false_positive = 0;
+        detect_binary_anomaly(tree, max_threshold, &initial_true_positive, &initial_false_positive,
+                              &initial_false_negative);
     }
     end_benchmark(&benchmark);
-    double findingAnomalies = get_benchmark_result(&benchmark);
+    double finding_anomalies = get_benchmark_result(&benchmark);
 
     // Implementation of Anomaly detection using HTTP request
     // TODO: fix this request, since it will got an error from response
@@ -256,14 +258,14 @@ int main() {
 
     binaryTreeTests();
 
-    printf("Measuring finding minimum key: %f seconds \n", findingMinValue);
-    printf("Measuring finding maximum key: %f seconds \n", findingMaxValue);
-    printf("Measuring insertion time: %f seconds \n", insertionTime);
-    printf("Measuring searching time: %f seconds \n", searchTime);
-    printf("Measuring deletion time %f seconds \n", deleteTime);
-    printf("Measuring find anomalies: %f seconds \n", findingAnomalies);
+    printf("Measuring finding minimum key: %f seconds \n", find_min_value);
+    printf("Measuring finding maximum key: %f seconds \n", find_max_value);
+    printf("Measuring insertion time: %f seconds \n", insertion_time);
+    printf("Measuring searching time: %f seconds \n", search_time);
+    printf("Measuring deletion time %f seconds \n", delete_time);
+    printf("Measuring find anomalies: %f seconds \n", finding_anomalies);
 
-    freeTree(tree);
+    free_tree(tree);
 
     return 0;
 }
